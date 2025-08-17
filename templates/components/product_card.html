@@ -1,0 +1,60 @@
+{% load static %}
+
+<div class="group relative bg-white rounded-2xl shadow-lg hover:shadow-2xl overflow-hidden transition-all duration-500 hover:-translate-y-2 max-w-sm mx-auto">
+  
+  <!-- Image Container with Gradient Overlay -->
+  <div class="relative overflow-hidden bg-gradient-to-br from-amber-50 to-rose-50">
+    {% if product.image %}
+      <img 
+        src="{{ product.image.url }}" 
+        alt="{{ product.name }}" 
+        class="h-64 sm:h-72 w-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
+      />
+    {% endif %}
+
+    <!-- Gradient Overlay -->
+    <div class="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+  </div>
+
+  <!-- Content Container -->
+  <div class="p-6 space-y-4">
+    
+    <!-- Brand -->
+    {% if product.brand %}
+      <div class="text-xs uppercase tracking-widest text-gray-400 font-medium">
+        {{ product.brand }}
+      </div>
+    {% endif %}
+
+    <!-- Product Name -->
+    <h3 class="text-xl font-bold text-gray-800 leading-tight group-hover:text-amber-600 transition-colors duration-300">
+      {{ product.name }}
+    </h3>
+
+    <!-- Description -->
+    <p class="text-gray-600 text-sm leading-relaxed line-clamp-3">
+      {{ product.description }}
+    </p>
+
+    <!-- Premium Features Indicators -->
+    <div class="flex items-center justify-center space-x-6 pt-4 border-t border-gray-100">
+      <div class="flex items-center text-xs text-gray-500 space-x-1">
+        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+          <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        <span>Authentic</span>
+      </div>
+      <div class="flex items-center text-xs text-gray-500 space-x-1">
+        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+          <path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z" />
+        </svg>
+        <span>Premium Quality</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Shine Effect on Hover -->
+  <div class="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+    <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
+  </div>
+</div>

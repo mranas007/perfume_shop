@@ -1,0 +1,52 @@
+{% extends "main.html" %}
+
+{% block content %}
+<div class="pt-16 pb-16 bg-gray-50">
+    <h1 class="text-4xl font-bold mb-8 text-center text-amber-600">Our Collection</h1>
+
+    <!-- Category Buttons -->
+    <div class="flex flex-wrap justify-center gap-4 mb-10">
+        {% for cat in categories %}
+        <button class="category-btn px-5 py-2 rounded-full border font-medium text-sm {% if cat == 'All' %}bg-amber-500 text-white border-amber-500{% else %}bg-white text-amber-600 border-amber-300 hover:bg-amber-100{% endif %}" data-category="{{ cat }}">
+            {{ cat }}
+        </button>
+        {% endfor %}
+    </div>
+
+    <!-- Products Grid -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+        {% for product in products %}
+            {% include "components/product_card.html" %}
+        {% endfor %}
+    </div>
+
+    <script>
+        {% comment %} const buttons = document.querySelectorAll('.category-btn');
+        const cards = document.querySelectorAll('.card');
+
+        buttons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const category = btn.getAttribute('data-category');
+
+                // Update active button style
+                buttons.forEach(b => {
+                    b.classList.remove('bg-amber-500','text-white');
+                    b.classList.add('bg-white','text-amber-600');
+                });
+                btn.classList.add('bg-amber-500','text-white');
+
+                // Show/hide products
+                cards.forEach(card => {
+                    if(category === "All" || card.getAttribute('data-category') === category){
+                        card.classList.remove('hidden');
+                    } else {
+                        card.classList.add('hidden');
+                    }
+                });
+            });
+        }); {% endcomment %}
+    </script>
+
+</div>
+
+{% endblock content %}

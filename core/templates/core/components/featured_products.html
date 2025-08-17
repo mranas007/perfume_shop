@@ -1,0 +1,34 @@
+{% load static %}
+
+<section class="py-16 bg-gray-50">
+  <div class="container mx-auto px-4">
+    
+    <!-- Section Heading -->
+    <div class="text-center mb-12">
+      <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">
+        Featured Collections
+      </h2>
+      <p class="text-gray-600 max-w-2xl mx-auto">
+        Discover our most sought-after fragrances, crafted with the finest ingredients to create unforgettable impressions.
+      </p>
+    </div>
+
+    <!-- Product Grid -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+      {% for product in products %}
+        {% include "components/product_card.html" %}
+      {% empty %}
+        <p class="col-span-full text-center text-gray-500">No featured products available.</p>
+      {% endfor %}
+    </div>
+
+    <!-- View All Button -->
+    <div class="text-center mt-12">
+      <a href="#"
+         class="inline-block px-6 py-3 bg-transparent border-2 border-amber-500 text-amber-500 font-medium rounded-md hover:bg-amber-500 hover:text-white transition-colors duration-300">
+        View All Collections
+      </a>
+    </div>
+
+  </div>
+</section>
