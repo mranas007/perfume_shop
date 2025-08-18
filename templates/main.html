@@ -1,29 +1,88 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        
-    {% load static %}
-    <link rel="stylesheet" href="{% static "css/output.css" %}">
-
+<head>
+     {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="{% block meta_description %}Adnan Perfume - Premium Fragrances Collection{% endblock %}">
+    <meta name="keywords" content="{% block meta_keywords %}perfume, fragrance, luxury, premium{% endblock %}">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="{% static 'images/favicon.ico' %}">
+    
+    <link rel="stylesheet" href="{% static 'css/output.css' %}">
+    
+    <!-- Additional CSS -->
+    {% block extra_css %}{% endblock %}
+    
     <title>
-        {% block title %}
-            Adnan Perfume
-        {% endblock title %}
+        {% block title %}Adnan Perfume{% endblock %}
     </title>
-
 </head>
-<body>
+<body class="min-h-screen bg-gray-50 flex flex-col">
+    
+    <!-- Navigation -->
     {% include "components/navbar.html" %}
-         
-    <main class="relative max-w-7xl mx-auto p-0">
+    
+    <!-- Alert Messages -->
+    {% include "components/alert_message.html" %}
+    
+    <!-- Skip to main content (accessibility) -->
+    {% comment %} <a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 bg-blue-600 text-white px-4 py-2 rounded-md z-50">
+        Skip to main content
+    </a>
+     {% endcomment %}
+     
+    <!-- Main Content Area -->
+    <main id="main-content" class="flex-1 relative max-w-7xl mx-auto">
         {% block content %}
-            
-        {% endblock content %}
+        {% endblock %}
     </main>
-        
+    
+    <!-- Footer -->
     {% include "components/footer.html" %}
-
+    
+    <!-- JavaScript -->
+    <script>
+        // Simple utilities for common tasks
+        window.utils = {
+            // Show loading state
+            showLoading: function(element) {
+                if (element) {
+                    element.disabled = true;
+                    element.innerHTML = '<span class="inline-block animate-spin rounded-full h-4 w-4 border-b-2 border-white"></span> Loading...';
+                }
+            },
+            
+            // Hide loading state
+            hideLoading: function(element, originalText) {
+                if (element) {
+                    element.disabled = false;
+                    element.innerHTML = originalText || 'Submit';
+                }
+            },
+            
+            // Simple form validation
+            validateForm: function(formElement) {
+                const requiredFields = formElement.querySelectorAll('[required]');
+                let isValid = true;
+                
+                requiredFields.forEach(field => {
+                    if (!field.value.trim()) {
+                        field.classList.add('border-red-500');
+                        isValid = false;
+                    } else {
+                        field.classList.remove('border-red-500');
+                    }
+                });
+                
+                return isValid;
+            }
+        };
+    </script>
+    
+    <!-- Additional JavaScript -->
+    {% block extra_js %}{% endblock %}
+    
 </body>
 </html>

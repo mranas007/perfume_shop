@@ -6,18 +6,25 @@
 
     <!-- Category Buttons -->
     <div class="flex flex-wrap justify-center gap-4 mb-10">
+        <a href="{% url 'catalog:index'  %}" class="category-btn px-5 py-2 rounded-full border font-medium text-sm bg-white text-amber-600 border-amber-300 hover:bg-amber-100" data-category="All">
+            All
+        </a>
         {% for cat in categories %}
-        <button class="category-btn px-5 py-2 rounded-full border font-medium text-sm {% if cat == 'All' %}bg-amber-500 text-white border-amber-500{% else %}bg-white text-amber-600 border-amber-300 hover:bg-amber-100{% endif %}" data-category="{{ cat }}">
+        <a href="{% url 'catalog:index'  %}?category_slug={{ cat.slug }}" class="category-btn px-5 py-2 rounded-full border font-medium text-sm {% if cat == 'All' %}bg-amber-500 text-white border-amber-500{% else %}bg-white text-amber-600 border-amber-300 hover:bg-amber-100{% endif %}" data-category="{{ cat }}">
             {{ cat }}
-        </button>
+        </a>
         {% endfor %}
     </div>
 
     <!-- Products Grid -->
     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
-        {% for product in products %}
-            {% include "components/product_card.html" %}
-        {% endfor %}
+        {% if products %}
+            {% for product in products %}
+                {% include "components/product_card.html" %}
+            {% endfor %}
+        {% else %}
+            <p class="col-span-full text-center text-gray-500">No products found.</p>
+        {% endif %}
     </div>
 
     <script>

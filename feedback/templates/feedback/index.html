@@ -1,0 +1,19 @@
+{% extends "main.html" %}
+
+{% block content %}
+
+  <div>
+    <h1>Customer Feedbacks list</h1>
+    <div>
+      <ul>
+        {% for feedback in feedback_list %}
+          <li>
+            <strong>{{ feedback.user.username }}</strong> rated {{ feedback.product.name }}: {{ feedback.rating }}/5
+            <p>{{ feedback.comment }}</p>
+          </li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+
+{% endblock content %}

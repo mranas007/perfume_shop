@@ -1,6 +1,9 @@
 from django.shortcuts import render
+from .models import Product, Category
+from django.core.paginator import Paginator
 
-products = [
+'''
+productss = [
   {
     "id": 1,
     "name": "After 12",
@@ -82,12 +85,24 @@ products = [
     "category": "Fresh"
   }
 ]
-categories = ["All", "Fresh", "Classic", "Woody", "Floral", "Gourmand", "Musk"];
+'''
+# categories = ["All", "Fresh", "Classic", "Woody", "Floral", "Gourmand", "Musk"];
 
 def catalog_page(request):
+    category_slug = request.GET.get('category_slug', '')
+    if category_slug:
+        products = Product.objects.filter(category__slug__icontains=category_slug)
+    else:
+        products = Product.objects.all()
+    categories = Category.objects.all()[:10]  # Fetching first 10 categories for display
+  
+    paginator = Paginator(products, 20)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
 
     context = {
-        'products': products,
-        'categories': categories
+        'products': page_obj.object_list,
+        'categories': categories,
+        'page_obj': page_obj
     }
     return render(request, 'catalog/index.html', context)

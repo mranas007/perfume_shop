@@ -1,7 +1,6 @@
 {% load static %}
 
-<section class="py-16 bg-gray-50">
-  <div class="container mx-auto px-4">
+  <div class="mx-auto py-16 px-4">
     
     <!-- Section Heading -->
     <div class="text-center mb-12">
@@ -15,11 +14,13 @@
 
     <!-- Product Grid -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-      {% for product in products %}
-        {% include "components/product_card.html" %}
-      {% empty %}
-        <p class="col-span-full text-center text-gray-500">No featured products available.</p>
-      {% endfor %}
+      {% if products %}
+          {% for product in products %}
+              {% include "components/product_card.html" %}
+          {% endfor %}
+      {% else %}
+          <p class="col-span-full text-center text-gray-500">No featured products available.</p>
+      {% endif %}
     </div>
 
     <!-- View All Button -->
@@ -31,4 +32,4 @@
     </div>
 
   </div>
-</section>
+
