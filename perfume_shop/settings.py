@@ -25,8 +25,8 @@ SECRET_KEY = 'django-insecure-vi2&^^w-aahtw&48xjw(yt(7n9(8bk4sip^7(hylyhhl27s)u@
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['192.168.100.133']
-
+ALLOWED_HOSTS = ['192.168.100.133', 'localhost', '127.0.0.1']
+SITE_DOMAIN = "http://127.0.0.1:8000"
 
 # Application definition
 
@@ -136,3 +136,11 @@ MEDIA_ROOT = BASE_DIR / 'media'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = "smtp.gmail.com"
+EMAIL_USE_TLS = True
+EMAIL_PORT = 587
+EMAIL_HOST_USER = "vision6521@gmail.com"
+EMAIL_HOST_PASSWORD = "anqnhbbodkdsyxci"

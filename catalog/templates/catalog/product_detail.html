@@ -1,0 +1,75 @@
+{% extends "main.html" %}
+
+{% block content %}
+<div class="pt-24 pb-16 bg-gray-50">
+  <div class="max-w-6xl mx-auto px-3 lg:px-6">
+    <!-- Breadcrumbs -->
+    <nav class="text-sm text-gray-500 mb-6" aria-label="Breadcrumb">
+      <ol class="flex items-center space-x-2">
+        <li><a href="{% url 'catalog:index' %}" class="hover:text-amber-600">Catalog</a></li>
+        <li>/</li>
+        <li class="text-gray-700 font-medium truncate">{{ product.name }}</li>
+      </ol>
+    </nav>
+
+    <!-- Product Hero -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <!-- Image -->
+      <div class="bg-white rounded-2xl shadow-2xl overflow-hidden">
+        <div class="relative bg-gradient-to-br from-amber-50 to-rose-50">
+          {% if product.image %}
+            <img src="{{ product.image.url }}" alt="{{ product.name }}" class="w-full h-[420px] object-cover object-center">
+          {% else %}
+            <div class="w-full h-[420px] flex items-center justify-center text-gray-400">No image</div>
+          {% endif %}
+          <div class="absolute inset-0 bg-gradient-to-t from-black/10 via-transparent to-transparent"></div>
+        </div>
+      </div>
+
+      <!-- Info -->
+      <div class="bg-white rounded-2xl shadow-2xl p-6 lg:p-8 space-y-6">
+        <div>
+          {% if product.brand %}
+            <div class="text-xs uppercase tracking-widest text-gray-400 font-medium">{{ product.brand }}</div>
+          {% endif %}
+          <h1 class="text-3xl font-bold text-gray-900 mt-1">{{ product.name }}</h1>
+        </div>
+
+        {% if product.price %}
+          <div class="flex items-center space-x-3">
+            <div class="text-2xl font-extrabold text-amber-600">PKR {{ product.price|floatformat:0 }}</div>
+            <span class="bg-amber-100 text-amber-700 text-xs font-semibold px-2 py-0.5 rounded-full">Inclusive taxes</span>
+          </div>
+        {% endif %}
+
+        <div class="text-gray-700 leading-relaxed whitespace-pre-line">{{ product.description }}</div>
+
+        <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 text-sm text-gray-600">
+          <div class="flex items-center space-x-2"><span class="w-2 h-2 rounded-full bg-green-500"></span><span>Stock - {% if product.stock > 0 %}Available{% else %}No{% endif %}</span></div>
+          <div class="flex items-center space-x-2"><span class="w-2 h-2 rounded-full bg-blue-500"></span><span>Category: {{ product.category.name }}</span></div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+          {% if user.is_authenticated and not user.is_staff and not user.is_superuser %}
+          <a href="#" class="inline-flex items-center justify-center rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-semibold py-3 px-6 shadow-md hover:shadow-lg transition">Add to Cart</a>
+          {% endif %}
+          <a href="{% url 'catalog:index' %}" class="inline-flex items-center justify-center rounded-xl border-2 border-gray-200 hover:border-amber-500 text-gray-700 hover:text-amber-600 font-semibold py-3 px-6 shadow-sm hover:shadow-md transition">Back to Catalog</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Related Products -->
+    {% if related_products %}
+      <div class="mt-12">
+        <h2 class="text-2xl font-bold text-gray-900 mb-4">You may also like</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          {% for product in related_products %}
+            {% include "components/product_card.html" %}
+          {% endfor %}
+        </div>
+      </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}
+

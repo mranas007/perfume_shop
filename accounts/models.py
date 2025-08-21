@@ -29,6 +29,7 @@ class UserManager(BaseUserManager):
 
 
 class User(AbstractUser, PermissionsMixin):
+    username = None
     name = models.CharField(max_length=255)
     email = models.EmailField(unique=True)
     slug = models.SlugField(max_length=160, unique=True, blank=True)

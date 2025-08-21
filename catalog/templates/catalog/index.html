@@ -1,7 +1,7 @@
 {% extends "main.html" %}
 
 {% block content %}
-<div class="pt-16 pb-16 bg-gray-50">
+<div class="pt-24 pb-16 bg-gray-50">
     <h1 class="text-4xl font-bold mb-8 text-center text-amber-600">Our Collection</h1>
 
     <!-- Category Buttons -->
@@ -17,7 +17,7 @@
     </div>
 
     <!-- Products Grid -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 px-2">
         {% if products %}
             {% for product in products %}
                 {% include "components/product_card.html" %}
@@ -28,30 +28,30 @@
     </div>
 
     <script>
-        {% comment %} const buttons = document.querySelectorAll('.category-btn');
-        const cards = document.querySelectorAll('.card');
+        // const buttons = document.querySelectorAll('.category-btn');
+        // const cards = document.querySelectorAll('.card');
 
-        buttons.forEach(btn => {
-            btn.addEventListener('click', () => {
-                const category = btn.getAttribute('data-category');
+        // buttons.forEach(btn => {
+        //     btn.addEventListener('click', () => {
+        //         const category = btn.getAttribute('data-category');
 
-                // Update active button style
-                buttons.forEach(b => {
-                    b.classList.remove('bg-amber-500','text-white');
-                    b.classList.add('bg-white','text-amber-600');
-                });
-                btn.classList.add('bg-amber-500','text-white');
+        //         // Update active button style
+        //         buttons.forEach(b => {
+        //             b.classList.remove('bg-amber-500','text-white');
+        //             b.classList.add('bg-white','text-amber-600');
+        //         });
+        //         btn.classList.add('bg-amber-500','text-white');
 
-                // Show/hide products
-                cards.forEach(card => {
-                    if(category === "All" || card.getAttribute('data-category') === category){
-                        card.classList.remove('hidden');
-                    } else {
-                        card.classList.add('hidden');
-                    }
-                });
-            });
-        }); {% endcomment %}
+        //         // Show/hide products
+        //         cards.forEach(card => {
+        //             if(category === "All" || card.getAttribute('data-category') === category){
+        //                 card.classList.remove('hidden');
+        //             } else {
+        //                 card.classList.add('hidden');
+        //             }
+        //         });
+        //     });
+        // });
     </script>
 
 </div>

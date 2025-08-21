@@ -5,7 +5,6 @@ from .form import ContactUsForm
 from django.contrib import messages
 
 
-
 def home(request):
   product_to_list = 4
   form = ContactUsForm()
@@ -26,6 +25,7 @@ def about(request):
 
 
 def contact_us_submission(request):
+
       form = ContactUsForm(request.POST or None)
       return_url = request.POST.get('returnUrl') or request.META.get('HTTP_REFERER')
 
@@ -40,3 +40,9 @@ def contact_us_submission(request):
           return redirect(return_url)
 
       return render(request, 'core/contact_us.html', {'form': form})
+
+
+
+
+
+

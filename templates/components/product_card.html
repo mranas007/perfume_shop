@@ -1,15 +1,28 @@
 {% load static %}
 
-<div class="group relative bg-white rounded-2xl shadow-lg hover:shadow-2xl overflow-hidden transition-all duration-500 hover:-translate-y-2 max-w-sm mx-auto">
-  
+<div class="group relative bg-white rounded-2xl shadow-lg hover:shadow-2xl overflow-hidden transition-all duration-500 hover:-translate-y-2 max-w-sm w-full mx-auto h-full flex flex-col" role="article" aria-label="Product card: {{ product.name }}">
+  <!-- Wishlist / Badge -->
+  <div class="absolute top-3 right-3 z-10 flex items-center space-x-2">
+    <button type="button" class="p-2 rounded-full bg-white/90 text-gray-600 hover:text-amber-600 shadow transition" aria-label="Save to wishlist">
+      <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 016.364 0L12 7.636l1.318-1.318a4.5 4.5 0 116.364 6.364L12 21.364 4.318 12.682a4.5 4.5 0 010-6.364z"/></svg>
+    </button>
+  </div>
+
   <!-- Image Container with Gradient Overlay -->
   <div class="relative overflow-hidden bg-gradient-to-br from-amber-50 to-rose-50">
     {% if product.image %}
-      <img 
-        src="{{ product.image.url }}" 
-        alt="{{ product.name }}" 
-        class="h-64 sm:h-72 w-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
+      <img
+        src="{{ product.image.url }}"
+        alt="{{ product.name }}"
+        loading="lazy"
+        decoding="async"
+        sizes="(min-width: 1024px) 320px, 100vw"
+        class="h-64 sm:h-72 w-full object-cover object-center group-hover:scale-105 transition-transform duration-700 ease-out"
       />
+    {% else %}
+      <div class="h-64 sm:h-72 w-full flex items-center justify-center text-gray-400">
+        <svg class="w-12 h-12" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7h18M3 7a2 2 0 012-2h14a2 2 0 012 2M3 7v10a2 2 0 002 2h3m10-12v10a2 2 0 01-2 2H9m0 0l3 3m-3-3l3-3"/></svg>
+      </div>
     {% endif %}
 
     <!-- Gradient Overlay -->
@@ -17,59 +30,67 @@
   </div>
 
   <!-- Content Container -->
-  <div class="p-6 space-y-4">
-    
-    <div class="flex justify-between items-center">
-            <!-- Brand -->
-          {% if product.brand %}
-            <div class="text-xs uppercase tracking-widest text-gray-400 font-medium">
-              {{ product.brand }}
-            </div>
-          {% endif %}
-         <!-- Price -->
-          {% if product.price %}
-            <div class="flex items-center space-x-2">
-            <span class="text-sm lg:text-lg font-bold text-amber-500">
-              PKR. {{ product.price|floatformat:0 }}
-            </span>
-            <span class="bg-amber-100 text-amber-600 text-xs font-semibold px-2 py-0.5 rounded-full">
-              Best Price
-            </span>
-            </div>
-          {% endif %}
+  <div class="p-6 space-y-4 flex-1 flex flex-col">
+    <div class="flex items-start justify-between">
+      <!-- Brand -->
+      {% if product.brand %}
+        <div class="text-[10px] mt-[7px] sm:text-xs uppercase tracking-widest text-gray-400 font-medium truncate max-w-[60%]" title="{{ product.brand }}">
+          {{ product.brand }}
+        </div>
+      {% endif %}
+      <!-- Price -->
+      {% if product.price %}
+        <div class="flex items-center space-x-2 flex-shrink-0">
+          <span class="text-base sm:text-lg font-bold text-amber-600" aria-label="Price in PKR">PKR {{ product.price|floatformat:0 }}</span>
+          <span class="hidden sm:inline bg-amber-100 text-amber-700 text-[10px] sm:text-xs font-semibold px-2 py-0.5 rounded-full">Best Price</span>
+        </div>
+      {% endif %}
     </div>
 
+    <!-- Product Name -->
+    <h3 class="text-lg sm:text-xl font-bold text-gray-800 leading-tight group-hover:text-amber-600 transition-colors duration-300">
+      {{ product.name }}
+    </h3>
 
-  
-        <!-- Product Name -->
-        <h3 class="text-xl font-bold text-gray-800 leading-tight group-hover:text-amber-600 transition-colors duration-300">
-          {{ product.name }}
-        </h3>
-      
     <!-- Description -->
-    <p class="text-gray-600 text-sm leading-relaxed line-clamp-3">
-      {{ product.description }}
-    </p>
- 
-    <!-- Premium Features Indicators -->
-    <div class="flex items-center justify-center space-x-6 pt-4 border-t border-gray-100">
-      <div class="flex items-center text-xs text-gray-500 space-x-1">
-        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-          <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-        </svg>
+    {% if product.description %}
+      <p class="text-gray-600 text-sm leading-relaxed line-clamp-3">
+        {{ product.description }}
+      </p>
+    {% endif %}
+
+    <!-- Feature Indicators -->
+    <div class="mt-2 pt-3 border-t border-gray-100 grid grid-cols-2 gap-3 text-xs text-gray-500">
+      <div class="flex items-center space-x-1">
+        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
         <span>Authentic</span>
       </div>
-      <div class="flex items-center text-xs text-gray-500 space-x-1">
-        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-          <path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z" />
-        </svg>
-        <span>Premium Quality</span>
+      <div class="flex items-center space-x-1">
+        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z"/></svg>
+        <span>Premium</span>
       </div>
     </div>
+
+    <!-- Actions -->
+    <div class="mt-4 flex flex-col sm:flex-row justify-between items-stretch gap-3">
+      {% if user.is_authenticated and not user.is_staff and not user.is_superuser %}
+        <a href="#"
+          class="flex-1 inline-flex items-center justify-center rounded-xl bg-amber-500 hover:bg-amber-600 active:scale-95 text-white font-semibold py-2.5 px-4 shadow-md hover:shadow-lg transition w-full sm:w-auto text-center"
+          style="min-width: 0;">
+          Add to Cart
+        </a>
+      {% endif %}
+      <a href="{% url 'catalog:product_detail' product.slug %}"
+        class="flex-1 inline-flex items-center justify-center rounded-xl border-2 border-gray-200 hover:border-amber-500 text-gray-700 hover:text-amber-600 active:scale-95 font-semibold py-2.5 px-4 shadow-sm hover:shadow-md transition w-full sm:w-auto text-center"
+        style="min-width: 0;">
+        View Details
+      </a>
+    </div>
+
   </div>
 
   <!-- Shine Effect on Hover -->
-  <div class="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+  <div class="pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
     <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
   </div>
 </div>
