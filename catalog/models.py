@@ -34,4 +34,4 @@ class Product(models.Model):
         super().save(*args, **kwargs)
 
     def __str__(self):
-        return self.name
+        return f"{self.name} | {self.brand or 'No Brand'} | {self.category.name if self.category else 'No Category'}"

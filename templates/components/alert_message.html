@@ -3,10 +3,18 @@
         {% for message in messages %}
             <div 
                 class="alert-message p-4 rounded-lg shadow-lg border-l-4 transition-all duration-500 ease-out transform translate-x-20 opacity-0
-                bg-gradient-to-r from-blue-600 via-blue-500 to-blue-400 border-blue-200 text-white"
+                bg-gradient-to-r
+                {% if message.tags == 'success' %}
+                   bg-green-500 text-white
+                {% elif message.tags == 'error' %}
+                   bg-red-500 text-white
+                {% elif message.tags == 'warning' %}
+                   bg-yellow-500 text-white
+                {% else %}
+                   bg-blue-500 text-white
+                {% endif %}"
                 role="alert"
-                data-message-index="{{ forloop.counter0 }}"
-            >
+                data-message-index="{{ forloop.counter0 }}">
                 <div class="flex items-start justify-between">
                     <div class="flex items-start space-x-3">
                         <!-- Icon -->

@@ -1,5 +1,4 @@
 from django.db import models
-from django.contrib.auth.models import AbstractUser, PermissionsMixin
 from django.utils.text import slugify
 from django.contrib.auth.models import AbstractUser, PermissionsMixin, BaseUserManager
 
@@ -30,17 +29,15 @@ class UserManager(BaseUserManager):
 
 
 class User(AbstractUser, PermissionsMixin):
-    slug = models.SlugField(max_length=160, unique=True, blank=True)
     name = models.CharField(max_length=255)
     email = models.EmailField(unique=True)
-    avatar = models.ImageField(null=True, blank=True, default='uploads/user/avatar.svg', upload_to='uploads/user')
-    is_active = models.BooleanField(default=True)
+    slug = models.SlugField(max_length=160, unique=True, blank=True)
+    phone = models.CharField(max_length=20,)
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
 
     objects = UserManager()
-
     def save(self, *args, **kwargs):
         if not self.slug:
             self.slug = slugify(self.name)

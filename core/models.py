@@ -9,4 +9,4 @@ class ContactUs(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return self.name
+        return f"{self.name} | {self.email or 'No Email'} | {self.phone} | {self.created_at.strftime('%Y-%m-%d %H:%M') if self.created_at else 'No Date'}"
