@@ -12,25 +12,40 @@
             <div class="hidden lg:flex items-center space-x-8">
                 <a href="{% url 'home' %}" class="desk-nav font-medium text-white hover:text-amber-400 transition relative group">
                     Home
-                    <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-amber-400 group-hover:w-full transition-all duration-300"></span>
+                    <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-amber-400 group-hover:w-full {% if request.path == '/' %}w-full{% endif %} transition-all duration-300"></span>
                 </a>
                 <a href="{% url 'catalog:index' %}" class="desk-nav font-medium text-white hover:text-amber-400 transition relative group">
                     Catalog
-                    <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-amber-400 group-hover:w-full transition-all duration-300"></span>
+                    <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-amber-400 group-hover:w-full {% if '/catalog' in request.path %}w-full{% endif %} transition-all duration-300"></span>
                 </a>
                 <a href="{% url 'about' %}" class="desk-nav font-medium text-white hover:text-amber-400 transition relative group">
                     About Us
-                    <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-amber-400 group-hover:w-full transition-all duration-300"></span>
+                    <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-amber-400 group-hover:w-full {% if '/about' in request.path %}w-full{% endif %} transition-all duration-300"></span>
                 </a>
                 <a href="{% url 'contact_us' %}" class="desk-nav font-medium text-white hover:text-amber-400 transition relative group">
                     Contact
-                    <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-amber-400 group-hover:w-full transition-all duration-300"></span>
+                    <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-amber-400 group-hover:w-full {% if '/contact' in request.path %}w-full{% endif %} transition-all duration-300"></span>
                 </a>
             </div>
 
-            <!-- Right Side (Auth + Mobile Button) -->
+            <!-- Right Side (Auth + Cart + Mobile Button) -->
             <div class="flex items-center space-x-4">
-                {% if user.is_authenticated %}
+                {% if user.is_authenticated%}
+                <!-- Cart Icon (Desktop) -->
+                    {% if user.is_staff is not True %}
+                        <a href="{% url 'cart:cart_detail' %}" class="hidden lg:flex items-center relative p-2 text-white hover:text-amber-400 transition-colors">
+                            {% load static %}
+                            <img src="{% static 'icons/shopping-cart-outline-svgrepo-com.svg' %}" alt="Shopping Cart" class="w-6 h-6 filter-white">
+                            {% if cart_count > 0 %}
+                                <span   
+                                class="absolute bg-amber-500 text-white text-xs font-bold rounded-full h-4 w-4 flex items-center justify-center"
+                                style="top: 0px;right: 0px;">
+                                    {{ cart_count }}
+                                </span>
+                            {% endif %}
+                        </a>
+                    {% endif %}
+
                 <!-- Desktop Profile Dropdown -->
                 <div class="hidden lg:block relative">
                     <button id="profileDropdownBtn" class="flex items-center py-2 px-3 text-white hover:text-amber-400 transition">
@@ -47,11 +62,13 @@
                     <!-- Desktop Dropdown menu -->
                     <div id="profileDropdownMenu" class="hidden absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg z-50">
                         <ul class="py-2 text-sm text-gray-700">
-                            {% if user.is_admin %}
-                            <li><a href="{% url 'admin:index' %}" class="block px-4 py-2 hover:bg-gray-100">Admin Panel</a></li>
+                            {% if user.is_staff %}
+                                <li><a href="{% url 'admin:index' %}" class="block px-4 py-2 hover:bg-gray-100">Admin Panel</a></li>
                             {% endif %}
                             <li><a href="{% url 'accounts:profile' %}" class="block px-4 py-2 hover:bg-gray-100">Profile</a></li>
-                            <li><a href="#" class="block px-4 py-2 hover:bg-gray-100">My Orders</a></li>
+                            {% if user.is_staff is not True%}
+                                <li><a href="{% url 'orders:index' %}" class="block px-4 py-2 hover:bg-gray-100">My Orders</a></li>
+                            {% endif %}
                         </ul>
                         <div class="py-1 border-t border-gray-200">
                             <form action="{% url 'accounts:logout' %}" method="post">
@@ -75,6 +92,21 @@
                 </div>
                 {% endif %}
 
+                <!-- Cart Icon (Mobile) -->
+                {% if user.is_authenticated %}
+                <a href="{% url 'cart:cart_detail' %}" class="lg:hidden relative p-2 text-white hover:text-amber-400 transition-colors">
+                    {% load static %}
+                    <img src="{% static 'icons/shopping-cart-outline-svgrepo-com.svg' %}" alt="Shopping Cart" class="w-6 h-6 filter-white">
+                    {% if cart_count > 0 %}
+                    <span 
+                        class="absolute bg-amber-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center"
+                        style="top: -1px;right: -1px;">
+                        {{ cart_count }}
+                    </span>
+                    {% endif %}
+                </a>
+                {% endif %}
+
                 <!-- Mobile menu button -->
                 <div class="lg:hidden">
                     <button id="mobileMenuBtn" class="text-white hover:text-amber-400 focus:outline-none transition p-2">
@@ -93,16 +125,16 @@
         <div id="mobileMenu" class="lg:hidden hidden bg-gray-800 mt-4 rounded-lg shadow-lg overflow-hidden">
             <!-- Navigation Links -->
             <div class="py-4">
-                <a href="{% url 'home' %}" class="block px-6 py-3 text-white hover:text-amber-400 hover:bg-gray-700 transition font-medium">
+                <a href="{% url 'home' %}" class="block px-6 py-3 text-white hover:text-amber-400 hover:bg-gray-700 transition font-medium {% if request.path == '/' %}bg-gray-700 text-amber-400{% endif %}">
                     Home
                 </a>
-                <a href="{% url 'catalog:index' %}" class="block px-6 py-3 text-white hover:text-amber-400 hover:bg-gray-700 transition font-medium">
+                <a href="{% url 'catalog:index' %}" class="block px-6 py-3 text-white hover:text-amber-400 hover:bg-gray-700 transition font-medium {% if '/catalog' in request.path %}bg-gray-700 text-amber-400{% endif %}">
                     Catalog
                 </a>
-                <a href="{% url 'about' %}" class="block px-6 py-3 text-white hover:text-amber-400 hover:bg-gray-700 transition font-medium">
+                <a href="{% url 'about' %}" class="block px-6 py-3 text-white hover:text-amber-400 hover:bg-gray-700 transition font-medium {% if '/about' in request.path %}bg-gray-700 text-amber-400{% endif %}">
                     About Us
                 </a>
-                <a href="{% url 'contact_us' %}" class="block px-6 py-3 text-white hover:text-amber-400 hover:bg-gray-700 transition font-medium">
+                <a href="{% url 'contact_us' %}" class="block px-6 py-3 text-white hover:text-amber-400 hover:bg-gray-700 transition font-medium {% if '/contact' in request.path %}bg-gray-700 text-amber-400{% endif %}">
                     Contact
                 </a>
             </div>
@@ -119,7 +151,7 @@
                         <span class="text-white font-medium">{{ user.name }}</span>
                     </div>
                     <div class="space-y-2">
-                        {% if user.is_admin %}
+                        {% if user.is_staff %}
                         <a href="{% url 'admin:index' %}" class="block px-4 py-2 text-gray-300 hover:text-amber-400 hover:bg-gray-700 rounded transition">
                             Admin Panel
                         </a>
@@ -127,7 +159,10 @@
                         <a href="{% url 'accounts:profile' %}" class="block px-4 py-2 text-gray-300 hover:text-amber-400 hover:bg-gray-700 rounded transition">
                             Profile
                         </a>
-                        <a href="#" class="block px-4 py-2 text-gray-300 hover:text-amber-400 hover:bg-gray-700 rounded transition">
+                        <a href="{% url 'cart:cart_detail' %}" class="block px-4 py-2 text-gray-300 hover:text-amber-400 hover:bg-gray-700 rounded transition">
+                            My Cart {% if cart_count > 0 %}({{ cart_count }}){% endif %}
+                        </a>
+                        <a href="{% url 'orders:index' %}" class="block px-4 py-2 text-gray-300 hover:text-amber-400 hover:bg-gray-700 rounded transition">
                             My Orders
                         </a>
                         <form action="{% url 'accounts:logout' %}" method="post" class="mt-4">
@@ -154,18 +189,30 @@
     </div>
 </nav>
 
+<style>
+/* Make cart icon white to match navbar */
+.filter-white {
+    filter: brightness(0) invert(1);
+}
+
+/* Hover effect for cart icon */
+.filter-white:hover {
+    filter: brightness(0) invert(0.8) sepia(1) saturate(5) hue-rotate(25deg);
+}
+</style>
+
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     // Desktop Profile Dropdown (simple toggle)
     const profileBtn = document.getElementById('profileDropdownBtn');
     const profileMenu = document.getElementById('profileDropdownMenu');
-    
+
     if (profileBtn && profileMenu) {
         profileBtn.addEventListener('click', function(e) {
             e.stopPropagation();
             profileMenu.classList.toggle('hidden');
         });
-        
+
         // Close dropdown when clicking outside
         document.addEventListener('click', function(e) {
             if (!profileMenu.classList.contains('hidden') && !profileMenu.contains(e.target)) {
@@ -179,17 +226,17 @@ document.addEventListener('DOMContentLoaded', function() {
     const mobileMenu = document.getElementById('mobileMenu');
     const openIcon = document.getElementById('mobileMenuIconOpen');
     const closeIcon = document.getElementById('mobileMenuIconClose');
-    
+
     if (mobileMenuBtn && mobileMenu) {
         mobileMenuBtn.addEventListener('click', function() {
             // Toggle menu visibility
             mobileMenu.classList.toggle('hidden');
-            
+
             // Toggle icons
             openIcon.classList.toggle('hidden');
             closeIcon.classList.toggle('hidden');
         });
-        
+
         // Close mobile menu when clicking on navigation links
         const mobileLinks = mobileMenu.querySelectorAll('a');
         mobileLinks.forEach(link => {

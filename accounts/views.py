@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from perfume_shop import settings
 from .models import User
-from .form import CustomUserCreationForm, EditUserForm
+from .form import CustomUserCreationForm, EditUserForm, SetPassword, LoginForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -19,35 +19,43 @@ from django.utils.encoding import force_str
 
 
 
-def login_view(request):
+
+def login_view(request): # Login View
     if request.user.is_authenticated:
         return redirect('home')  
     
+    form = LoginForm()
     if request.method == 'POST':
-        email = request.POST.get('email')
-        password = request.POST.get('password')
 
-        # Check if the user exists with the provided email
-        if check_user := User.objects.filter(email=email).first():
-            if check_user.is_active:
-                user = authenticate(email=email, password=password)
+        form = LoginForm(request.POST)
+        if form.is_valid():
+            email = form.cleaned_data.get('email')
+            password = form.cleaned_data.get('password')
+
+            # Check if the user exists with the provided email
+            if check_user := User.objects.filter(email=email).first():
+                if check_user.is_active:
+                    user = authenticate(email=email, password=password)
+                    if user is None:
+                        form.add_error("password", "Invalid password.")
+                        messages.error(request, 'Invalid password.')
+                        return redirect('accounts:login')
+                    else:
+                        login(request, user)
+                        return redirect('home')
+                else:
+                    messages.error(request, 'Account is inactive, Please Activate your account.')
+                    return redirect('accounts:login')
             else:
-                messages.error(request, 'Account is inactive, Please Activate your account.')
+                form.add_error("email", "Invalid email.")
+                messages.error(request, 'Invalid email.')
                 return redirect('accounts:login')
-        else:
-            messages.error(request, 'Email does not exist.')
-            return redirect('accounts:login')
 
-        if user is not None:
-            login(request, user)
-            return redirect('home')  # Redirect to a success page
-        else:
-            # Invalid login
-            messages.error(request, 'Invalid email or password.')
-    return render(request, 'accounts/login.html')
+    return render(request, 'accounts/login.html', {"form": form})
 
 
-def register_view(request):
+
+def register_view(request): # Registration View
 
     if request.user.is_authenticated:
         return redirect('home')  # Redirect if user is already logged in
@@ -70,8 +78,8 @@ def register_view(request):
     return render(request, 'accounts/register.html', context)
 
 
-# This function is used to send an account activation email
-def send_activation_email(request, user):
+
+def send_activation_email(request, user): # To send an account activation email
     uid = urlsafe_base64_encode(force_bytes(user.pk))
     token = default_token_generator.make_token(user)
 
@@ -86,8 +94,8 @@ def send_activation_email(request, user):
     )
 
 
-# This function is used to activate a user account
-def activate_account(request, uidb64, token):
+
+def activate_account(request, uidb64, token): # To activate a user account
     try:
         uid = force_str(urlsafe_base64_decode(uidb64))
         user = User.objects.get(pk=uid)
@@ -104,13 +112,13 @@ def activate_account(request, uidb64, token):
         return redirect('accounts:login')
 
 
-# This function is used to render an email confirmation alert page
-def email_confirmation_alert(request):
+
+def email_confirmation_alert(request): # To render an email confirmation alert page
   return render(request, 'accounts/email_confirmation_alert.html')
 
 
-# This function is used to resend the activation email
-def resend_activation_email(request):
+
+def resend_activation_email(request): # To resend the activation email
     if request.method == 'POST':
         email = request.POST.get('email')
         if check_user := User.objects.filter(email=email).first():
@@ -126,9 +134,65 @@ def resend_activation_email(request):
     return render(request, 'accounts/resend_activation_email.html')
 
 
-def logout_view(request):
+
+def forgot_password_view(request): # To render the forgot password page
+    if request.method == 'POST':
+        email = request.POST.get('email')
+        if user := User.objects.filter(email=email).first():
+            # Send password reset email
+            send_password_reset_email(request, user)
+            messages.success(request, "Password reset email sent.")
+            return redirect('accounts:login')
+        else:
+            messages.error(request, "No user found with this email address.")
+    return render(request, 'accounts/forgot_password.html')
+
+
+
+def send_password_reset_email(request, user): # To send a password reset email
+    uid = urlsafe_base64_encode(force_bytes(user.pk))
+    token = default_token_generator.make_token(user)
+
+    # Used reverse() instead of hardcoding
+    reset_path = reverse("accounts:reset_password", kwargs={"uidb64": uid, "token": token})
+    reset_link = f"{settings.SITE_DOMAIN}{reset_path}"
+
+    send_mail_to_client(
+        subject="Reset your password",
+        message=f"Click the link to reset your password: {reset_link}",
+        recipient_list=[user.email],
+    )
+
+
+
+def reset_password_view(request, uidb64, token): # To reset a user's password
+    try:
+        uid = force_str(urlsafe_base64_decode(uidb64))
+        user = User.objects.get(pk=uid)
+    except (TypeError, ValueError, OverflowError, User.DoesNotExist):
+        user = None
+    
+    if user is not None and default_token_generator.check_token(user, token):
+        if request.method == 'POST':
+            form = SetPassword(request.POST)
+            if form.is_valid():
+                user.set_password(form.cleaned_data['password'])
+                user.save()
+                messages.success(request, 'Your password has been reset successfully!')
+                return redirect('accounts:login')
+        else:
+            form = SetPassword()
+
+        return render(request, 'accounts/reset_password.html', {'form': form})
+    else:
+        messages.error(request, 'Password reset link is invalid!')
+        return redirect('accounts:login')
+
+
+
+def logout_view(request): # To log out a user
     logout(request)
-    return redirect('home')
+    return redirect('accounts:login')
 
 
 @login_required(login_url='accounts:login')

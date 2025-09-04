@@ -1,59 +1,472 @@
 {% extends "main.html" %}
+{% load static %}
+
+{% block title %}Our Collection - Adnan Perfume{% endblock %}
 
 {% block content %}
-<div class="pt-24 pb-16 bg-gray-50">
-    <h1 class="text-4xl font-bold mb-8 text-center text-amber-600">Our Collection</h1>
+<div class="pt-24 pb-16 bg-gray-50 min-h-screen">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <!-- Header Section -->
+        <div class="mb-6 lg:mb-8">
+            <h1 class="text-2xl md:text-3xl lg:text-4xl font-bold text-center text-gray-800 mb-3 lg:mb-4">Our Collection</h1>
+            <p class="text-gray-600 text-center max-w-2xl mx-auto text-sm lg:text-base">Discover our premium selection of fragrances and lifestyle products</p>
+        </div>
 
-    <!-- Category Buttons -->
-    <div class="flex flex-wrap justify-center gap-4 mb-10">
-        <a href="{% url 'catalog:index'  %}" class="category-btn px-5 py-2 rounded-full border font-medium text-sm bg-white text-amber-600 border-amber-300 hover:bg-amber-100" data-category="All">
-            All
-        </a>
-        {% for cat in categories %}
-        <a href="{% url 'catalog:index'  %}?category_slug={{ cat.slug }}" class="category-btn px-5 py-2 rounded-full border font-medium text-sm {% if cat == 'All' %}bg-amber-500 text-white border-amber-500{% else %}bg-white text-amber-600 border-amber-300 hover:bg-amber-100{% endif %}" data-category="{{ cat }}">
-            {{ cat }}
-        </a>
-        {% endfor %}
+        <!-- Mobile Filter Bar -->
+        <div class="lg:hidden mb-6">
+            <div class="bg-white rounded-xl shadow-sm p-4">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <button id="filterBtn" class="flex items-center gap-2 bg-amber-500 hover:bg-amber-600 text-white font-medium py-2.5 px-4 rounded-lg transition-colors text-sm">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/>
+                            </svg>
+                            Filters
+                        </button>
+
+                        {% if request.GET.category_slug or request.GET.sort %}
+                        <button onclick="clearFilters()" class="text-gray-500 hover:text-gray-700 text-sm font-medium">
+                            Clear all
+                        </button>
+                        {% endif %}
+                    </div>
+
+                    <div class="text-sm text-gray-600">
+                        {{ page_obj.paginator.count }} products
+                    </div>
+                </div>
+
+                <!-- Mobile Active Filters -->
+                {% if request.GET.category_slug or request.GET.sort %}
+                <div class="flex flex-wrap gap-2 mt-3">
+                    {% if request.GET.category_slug %}
+                        {% for category in categories %}
+                            {% if request.GET.category_slug == category.slug %}
+                            <span class="inline-flex items-center gap-1 bg-amber-100 text-amber-800 text-xs px-2 py-1 rounded-full">
+                                {{ category.name }}
+                                <button onclick="removeFilter('category_slug')" class="hover:bg-amber-200 rounded-full p-0.5">
+                                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                                    </svg>
+                                </button>
+                            </span>
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
+
+                    {% if request.GET.sort and request.GET.sort != 'featured' %}
+                    <span class="inline-flex items-center gap-1 bg-gray-100 text-gray-800 text-xs px-2 py-1 rounded-full">
+                        {% if request.GET.sort == 'price_low' %}Price: Low to High
+                        {% elif request.GET.sort == 'price_high' %}Price: High to Low
+                        {% elif request.GET.sort == 'newest' %}Newest First
+                        {% elif request.GET.sort == 'popular' %}Most Popular
+                        {% endif %}
+                        <button onclick="removeFilter('sort')" class="hover:bg-gray-200 rounded-full p-0.5">
+                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                            </svg>
+                        </button>
+                    </span>
+                    {% endif %}
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Main Layout Container with proper structure -->
+        <div class="lg:grid lg:grid-cols-12 lg:gap-8 flex flex-col gap-6">
+            <!-- Desktop Sidebar - Fixed width column -->
+            <div class="lg:col-span-3 lg:block">
+                <div id="sidebar" class="sidebar">
+                    <!-- Sidebar Header -->
+                    <div class="flex items-center justify-between mb-6">
+                        <h2 class="text-lg font-semibold text-gray-800">Filters</h2>
+                        <button id="closeSidebarBtn" class="lg:hidden text-gray-400 hover:text-gray-600">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                            </svg>
+                        </button>
+                    </div>
+
+                    <!-- Categories Section -->
+                    <div class="mb-8">
+                        <h3 class="text-base font-semibold text-gray-800 mb-4 flex items-center gap-2">
+                            <svg class="w-4 h-4 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
+                            </svg>
+                            Categories
+                        </h3>
+
+                        <div class="space-y-1">
+                            <a href="{% url 'catalog:index' %}"
+                               class="flex items-center justify-between p-3 rounded-xl transition-all duration-200 {% if not request.GET.category_slug %}bg-amber-50 text-amber-700 border-2 border-amber-200{% else %}text-gray-700 hover:bg-gray-50 border-2 border-transparent{% endif %}">
+                                <span class="font-medium text-sm">All Products</span>
+                                <span class="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full">{{ products.count }}</span>
+                            </a>
+
+                            {% for category in categories %}
+                            <a href="?category_slug={{ category.slug }}{% if request.GET.sort and request.GET.sort != 'featured' %}&sort={{ request.GET.sort }}{% endif %}"
+                               class="flex items-center justify-between p-3 rounded-xl transition-all duration-200 {% if request.GET.category_slug == category.slug %}bg-amber-50 text-amber-700 border-2 border-amber-200{% else %}text-gray-700 hover:bg-gray-50 border-2 border-transparent{% endif %}">
+                                <span class="font-medium text-sm">{{ category.name }}</span>
+                                <span class="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full">{{ category.products.count }}</span>
+                            </a>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <!-- Sort Options -->
+                    <div class="mb-6">
+                        <h3 class="text-base font-semibold text-gray-800 mb-4 flex items-center gap-2">
+                            <svg class="w-4 h-4 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"/>
+                            </svg>
+                            Sort By
+                        </h3>
+
+                        <div class="space-y-1">
+                            <a href="?{% if request.GET.category_slug %}category_slug={{ request.GET.category_slug }}&{% endif %}sort=featured"
+                               class="flex items-center p-3 rounded-xl transition-all duration-200 {% if not request.GET.sort or request.GET.sort == 'featured' %}bg-amber-50 text-amber-700 border-2 border-amber-200{% else %}text-gray-700 hover:bg-gray-50 border-2 border-transparent{% endif %}">
+                                <span class="font-medium text-sm">Featured</span>
+                            </a>
+
+                            <a href="?{% if request.GET.category_slug %}category_slug={{ request.GET.category_slug }}&{% endif %}sort=price_low"
+                               class="flex items-center p-3 rounded-xl transition-all duration-200 {% if request.GET.sort == 'price_low' %}bg-amber-50 text-amber-700 border-2 border-amber-200{% else %}text-gray-700 hover:bg-gray-50 border-2 border-transparent{% endif %}">
+                                <span class="font-medium text-sm">Price: Low to High</span>
+                            </a>
+
+                            <a href="?{% if request.GET.category_slug %}category_slug={{ request.GET.category_slug }}&{% endif %}sort=price_high"
+                               class="flex items-center p-3 rounded-xl transition-all duration-200 {% if request.GET.sort == 'price_high' %}bg-amber-50 text-amber-700 border-2 border-amber-200{% else %}text-gray-700 hover:bg-gray-50 border-2 border-transparent{% endif %}">
+                                <span class="font-medium text-sm">Price: High to Low</span>
+                            </a>
+
+                            <a href="?{% if request.GET.category_slug %}category_slug={{ request.GET.category_slug }}&{% endif %}sort=newest"
+                               class="flex items-center p-3 rounded-xl transition-all duration-200 {% if request.GET.sort == 'newest' %}bg-amber-50 text-amber-700 border-2 border-amber-200{% else %}text-gray-700 hover:bg-gray-50 border-2 border-transparent{% endif %}">
+                                <span class="font-medium text-sm">Newest First</span>
+                            </a>
+
+                            <a href="?{% if request.GET.category_slug %}category_slug={{ request.GET.category_slug }}&{% endif %}sort=popular"
+                               class="flex items-center p-3 rounded-xl transition-all duration-200 {% if request.GET.sort == 'popular' %}bg-amber-50 text-amber-700 border-2 border-amber-200{% else %}text-gray-700 hover:bg-gray-50 border-2 border-transparent{% endif %}">
+                                <span class="font-medium text-sm">Most Popular</span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Clear Filters Button -->
+                    {% if request.GET.category_slug or request.GET.sort %}
+                    <div class="pt-4 border-t border-gray-200">
+                        <button onclick="clearAllFilters()" class="w-full bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium py-2.5 px-4 rounded-lg transition-colors text-sm">
+                            Clear All Filters
+                        </button>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Main Content Area - Flexible width column -->
+            <div class="lg:col-span-9">
+                <!-- Desktop Results Header -->
+                <div class="hidden lg:block bg-white rounded-2xl shadow-sm p-6 mb-6">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-gray-600">
+                                {% if request.GET.category_slug %}
+                                    Showing products in <span class="font-semibold text-amber-600">{{ current_category.name }}</span>
+                                {% else %}
+                                    Showing all products
+                                {% endif %}
+                                <span class="text-sm ml-1">({{ page_obj.paginator.count }} total)</span>
+                            </p>
+                        </div>
+
+                        <!-- Desktop Sort Dropdown -->
+                        <form method="get" class="flex items-center gap-3">
+                            {% if request.GET.category_slug %}
+                                <input type="hidden" name="category_slug" value="{{ request.GET.category_slug }}">
+                            {% endif %}
+                            <span class="text-sm text-gray-600 font-medium">Sort by:</span>
+                            <select name="sort" onchange="this.form.submit()"
+                                    class="text-sm border border-gray-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-amber-500 focus:border-transparent bg-white min-w-[160px]">
+                                <option value="featured" {% if not request.GET.sort or request.GET.sort == 'featured' %}selected{% endif %}>Featured</option>
+                                <option value="price_low" {% if request.GET.sort == 'price_low' %}selected{% endif %}>Price: Low to High</option>
+                                <option value="price_high" {% if request.GET.sort == 'price_high' %}selected{% endif %}>Price: High to Low</option>
+                                <option value="newest" {% if request.GET.sort == 'newest' %}selected{% endif %}>Newest</option>
+                                <option value="popular" {% if request.GET.sort == 'popular' %}selected{% endif %}>Most Popular</option>
+                            </select>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Products Grid -->
+                {% if page_obj %}
+                <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 lg:gap-6 mb-6 lg:mb-8">
+                    {% for product in page_obj %}
+                        {% include "components/product_card.html" %}
+                    {% endfor %}
+                </div>
+
+                <!-- Pagination -->
+                {% if page_obj.has_other_pages %}
+                <div class="bg-white rounded-2xl shadow-sm p-4 lg:p-6">
+                    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                        <div class="text-sm text-gray-600 text-center sm:text-left">
+                            Showing {{ page_obj.start_index }} to {{ page_obj.end_index }} of {{ page_obj.paginator.count }} products
+                        </div>
+
+                        <div class="flex items-center justify-center gap-1 sm:gap-2">
+                            {% if page_obj.has_previous %}
+                                <a href="?{% if request.GET.category_slug %}category_slug={{ request.GET.category_slug }}&{% endif %}{% if request.GET.sort %}sort={{ request.GET.sort }}&{% endif %}page={{ page_obj.previous_page_number }}"
+                                   class="flex items-center gap-2 px-3 lg:px-4 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 hover:text-gray-700 transition-colors">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                                    </svg>
+                                    <span class="hidden sm:inline">Previous</span>
+                                </a>
+                            {% endif %}
+
+                            <div class="flex items-center gap-1">
+                                {% for num in page_obj.paginator.page_range %}
+                                    {% if page_obj.number == num %}
+                                        <span class="px-3 lg:px-4 py-2 text-sm font-medium text-white bg-amber-500 border border-amber-500 rounded-lg">{{ num }}</span>
+                                    {% elif num > page_obj.number|add:'-2' and num < page_obj.number|add:'3' %}
+                                        <a href="?{% if request.GET.category_slug %}category_slug={{ request.GET.category_slug }}&{% endif %}{% if request.GET.sort %}sort={{ request.GET.sort }}&{% endif %}page={{ num }}"
+                                           class="px-3 lg:px-4 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 hover:text-gray-700 transition-colors">{{ num }}</a>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+
+                            {% if page_obj.has_next %}
+                                <a href="?{% if request.GET.category_slug %}category_slug={{ request.GET.category_slug }}&{% endif %}{% if request.GET.sort %}sort={{ request.GET.sort }}&{% endif %}page={{ page_obj.next_page_number }}"
+                                   class="flex items-center gap-2 px-3 lg:px-4 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 hover:text-gray-700 transition-colors">
+                                    <span class="hidden sm:inline">Next</span>
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                                    </svg>
+                                </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+
+                {% else %}
+                <!-- Empty State -->
+                <div class="bg-white rounded-2xl shadow-sm p-8 lg:p-12 text-center">
+                    <div class="w-20 lg:w-24 h-20 lg:h-24 mx-auto mb-6 bg-gray-100 rounded-full flex items-center justify-center">
+                        {% load static %}
+                        <img src="{% static 'icons/shopping-cart-outline-svgrepo-com.svg' %}" alt="No Products" class="w-10 lg:w-12 h-10 lg:h-12 text-gray-400">
+                    </div>
+                    <h3 class="text-lg lg:text-xl font-medium text-gray-900 mb-2">No products found</h3>
+                    <p class="text-gray-600 mb-6 text-sm lg:text-base">Try adjusting your filters or browse all categories.</p>
+                    <a href="{% url 'catalog:index' %}" class="inline-flex items-center px-6 py-3 bg-amber-500 hover:bg-amber-600 text-white font-medium rounded-full transition-colors text-sm lg:text-base">
+                        View All Products
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
     </div>
-
-    <!-- Products Grid -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 px-2">
-        {% if products %}
-            {% for product in products %}
-                {% include "components/product_card.html" %}
-            {% endfor %}
-        {% else %}
-            <p class="col-span-full text-center text-gray-500">No products found.</p>
-        {% endif %}
-    </div>
-
-    <script>
-        // const buttons = document.querySelectorAll('.category-btn');
-        // const cards = document.querySelectorAll('.card');
-
-        // buttons.forEach(btn => {
-        //     btn.addEventListener('click', () => {
-        //         const category = btn.getAttribute('data-category');
-
-        //         // Update active button style
-        //         buttons.forEach(b => {
-        //             b.classList.remove('bg-amber-500','text-white');
-        //             b.classList.add('bg-white','text-amber-600');
-        //         });
-        //         btn.classList.add('bg-amber-500','text-white');
-
-        //         // Show/hide products
-        //         cards.forEach(card => {
-        //             if(category === "All" || card.getAttribute('data-category') === category){
-        //                 card.classList.remove('hidden');
-        //             } else {
-        //                 card.classList.add('hidden');
-        //             }
-        //         });
-        //     });
-        // });
-    </script>
-
 </div>
+
+<!-- Mobile Sidebar Overlay -->
+<div id="sidebarOverlay" class="sidebar-overlay"></div>
+
+<script>
+// Sidebar functionality - Only for mobile
+class SidebarController {
+    constructor() {
+        this.sidebar = document.getElementById('sidebar');
+        this.overlay = document.getElementById('sidebarOverlay');
+        this.filterBtn = document.getElementById('filterBtn');
+        this.closeBtn = document.getElementById('closeSidebarBtn');
+        this.isMobile = window.innerWidth < 1024;
+        
+        this.init();
+    }
+
+    init() {
+        if (!this.sidebar || !this.overlay || !this.filterBtn) {
+            return;
+        }
+
+        // Only add mobile event listeners
+        this.filterBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            if (this.isMobile) {
+                this.openSidebar();
+            }
+        });
+
+        if (this.closeBtn) {
+            this.closeBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                if (this.isMobile) {
+                    this.closeSidebar();
+                }
+            });
+        }
+
+        this.overlay.addEventListener('click', (e) => {
+            e.preventDefault();
+            if (this.isMobile) {
+                this.closeSidebar();
+            }
+        });
+
+        // Handle window resize
+        window.addEventListener('resize', () => {
+            const wasMobile = this.isMobile;
+            this.isMobile = window.innerWidth < 1024;
+            
+            // If switching from mobile to desktop, clean up mobile states
+            if (wasMobile && !this.isMobile) {
+                this.closeSidebar();
+                // Reset any mobile-specific styles
+                this.sidebar.classList.remove('sidebar-open');
+                this.overlay.classList.remove('overlay-visible');
+                document.body.style.overflow = '';
+            }
+        });
+    }
+
+    isMobileDevice() {
+        return window.innerWidth < 1024;
+    }
+
+    openSidebar() {
+        if (!this.isMobileDevice()) return;
+        
+        this.sidebar.classList.add('sidebar-open');
+        this.overlay.classList.add('overlay-visible');
+        document.body.style.overflow = 'hidden';
+    }
+
+    closeSidebar() {
+        this.sidebar.classList.remove('sidebar-open');
+        this.overlay.classList.remove('overlay-visible');
+        document.body.style.overflow = '';
+    }
+}
+
+// Filter management functions
+function clearAllFilters() {
+    window.location.href = '{% url "catalog:index" %}';
+}
+
+function removeFilter(filterName) {
+    const url = new URL(window.location);
+    url.searchParams.delete(filterName);
+    window.location.href = url.toString();
+}
+
+function clearFilters() {
+    clearAllFilters();
+}
+
+// Initialize when DOM is ready
+document.addEventListener('DOMContentLoaded', function() {
+    new SidebarController();
+});
+</script>
+
+<style>
+/* Base sidebar styles */
+.sidebar {
+    background: white;
+    border-radius: 1rem;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    padding: 1.5rem;
+    height: fit-content;
+    transition: transform 0.3s ease-in-out;
+}
+
+/* Desktop styles - Fixed positioning */
+@media (min-width: 1024px) {
+    .sidebar {
+        position: sticky;
+        top: 6rem;
+        max-height: calc(100vh - 8rem);
+        overflow-y: auto;
+        width: 100%; /* Takes full width of its grid column */
+    }
+}
+
+/* Mobile styles */
+@media (max-width: 1023px) {
+    .sidebar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 320px;
+        height: 100vh;
+        z-index: 1000;
+        transform: translateX(-100%);
+        border-radius: 0;
+        overflow-y: auto;
+        padding: 2rem 1.5rem;
+    }
+
+    .sidebar.sidebar-open {
+        transform: translateX(0);
+    }
+}
+
+/* Overlay styles */
+.sidebar-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+}
+
+.sidebar-overlay.overlay-visible {
+    display: block;
+}
+
+/* Custom scrollbar for mobile sidebar */
+@media (max-width: 1023px) {
+    .sidebar::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    .sidebar::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 10px;
+    }
+
+    .sidebar::-webkit-scrollbar-thumb {
+        background: #d1d5db;
+        border-radius: 10px;
+    }
+
+    .sidebar::-webkit-scrollbar-thumb:hover {
+        background: #9ca3af;
+    }
+}
+
+/* Focus states for accessibility */
+.sidebar a:focus,
+.sidebar button:focus {
+    outline: 2px solid #f59e0b;
+    outline-offset: 2px;
+}
+
+/* Grid layout adjustments for better spacing */
+@media (min-width: 1024px) {
+    /* Ensure proper grid column sizing */
+    .lg\:col-span-3 {
+        grid-column: span 3 / span 3;
+        min-width: 0; /* Prevents overflow */
+    }
+    
+    .lg\:col-span-9 {
+        grid-column: span 9 / span 9;
+        min-width: 0; /* Prevents overflow */
+    }
+}
+</style>
 
 {% endblock content %}

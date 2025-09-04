@@ -1,8 +1,11 @@
+import re
 from django.forms import ModelForm
 from django import forms
-import re
 from .models import User
 from django.contrib.auth.forms import UserCreationForm
+from django.utils.translation import gettext_lazy as _
+
+
 
 
 class CustomUserCreationForm(UserCreationForm):
@@ -43,7 +46,21 @@ class CustomUserCreationForm(UserCreationForm):
         return normalized
 
 
+class SetPassword(ModelForm):
+        class Meta:
+            model = User
+            fields = ['password']
+            widgets = {
+                'password': forms.PasswordInput(attrs={'placeholder': 'New password'}),
+            }
+
+
 class EditUserForm(ModelForm):
     class Meta:
         model = User
         fields = ['name', 'phone']
+
+
+class LoginForm(forms.Form):
+    email = forms.EmailField(label=_("Email"), max_length=254)
+    password = forms.CharField(widget=forms.PasswordInput, label=_("Password"))

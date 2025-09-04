@@ -1,8 +1,470 @@
 {% extends "main.html" %}
+{% load static %}
+
+{% block title %}Shopping Cart - Adnan Perfume{% endblock %}
 
 {% block content %}
-    <h1>Shopping Cart</h1>
-    <div>
-        <!-- Cart items will be displayed here -->
+<div class="pt-24 pb-16 bg-gray-50 min-h-screen">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <!-- Header -->
+        <div class="mb-8">
+            <h1 class="text-3xl md:text-4xl font-bold text-center text-gray-800 mb-4">Shopping Cart</h1>
+            <p class="text-gray-600 text-center max-w-2xl mx-auto">Review your items and proceed to checkout</p>
+        </div>
+
+        {% if cart_items %}
+        <div class="grid grid-cols-1 xl:grid-cols-3 gap-8">
+            <!-- Cart Items (Main Content) -->
+            <div class="xl:col-span-2 space-y-6">
+                {% for item in cart_items %}
+                <div class="bg-white rounded-2xl shadow-lg overflow-hidden">
+                    <div class="p-8">
+                        <div class="flex flex-col lg:flex-row gap-8">
+                            <!-- Product Image -->
+                            <div class="w-full sm:w-40 lg:w-48 xl:w-56 h-40 sm:h-80 bg-gray-100 rounded-xl overflow-hidden flex-shrink-0 shadow-sm">
+                                {% if item.product.image %}
+                                    <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}"
+                                         class="w-full h-full object-cover hover:scale-105 transition-transform duration-300">
+                                {% else %}
+                                    <div class="w-full h-full flex items-center justify-center text-gray-400">
+                                        <svg class="w-12 h-12 lg:w-16 lg:h-16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                                        </svg>
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <!-- Product Details -->
+                            <div class="flex-1 min-w-0">
+                                <div class="flex flex-col xl:flex-row xl:items-start xl:justify-between gap-6">
+                                    <div class="flex-1 min-w-0">
+                                        <h3 class="text-xl lg:text-2xl font-semibold text-gray-800 mb-3">{{ item.product.name }}</h3>
+                                        {% if item.product.brand %}
+                                            <p class="text-base text-gray-500 mb-3">{{ item.product.brand }}</p>
+                                        {% endif %}
+                                        <p class="text-base text-gray-600 line-clamp-3">{{ item.product.description }}</p>
+                                    </div>
+
+                                    <!-- Quantity and Price -->
+                                    <div class="flex flex-col lg:items-end gap-6">
+                                     
+                                            <form method="post" action="{% url 'cart:cart_update' item.id %}" class="flex items-center gap-3" id="update-form-{{ item.id }}">
+                                                {% csrf_token %}
+                                                <div class="flex items-center border-2 border-gray-200 rounded-xl overflow-hidden shadow-sm bg-white">
+                                                    <button type="button" onclick="updateQuantity(this, -1)"
+                                                            class="px-4 py-3 text-gray-600 hover:text-white hover:bg-red-500 transition-all duration-200 font-bold text-xl w-12 h-12 flex items-center justify-center"
+                                                            {% if item.quantity <= 1 %}disabled class="opacity-50 cursor-not-allowed"{% endif %}>
+                                                        −
+                                                    </button>
+                                                    <input type="number" name="quantity" value="{{ item.quantity }}"
+                                                           min="1" max="{{ item.product.stock }}"
+                                                           class="w-16 text-center border-0 focus:ring-2 focus:ring-amber-500 focus:border-transparent text-lg font-semibold bg-gray-50"
+                                                           onchange="validateQuantity(this)"
+                                                           id="quantity-input-{{ item.id }}">
+                                                    <button type="button" onclick="updateQuantity(this, 1)"
+                                                            class="px-4 py-3 text-gray-600 hover:text-white hover:bg-green-500 transition-all duration-200 font-bold text-xl w-12 h-12 flex items-center justify-center"
+                                                            {% if item.quantity >= item.product.stock %}disabled class="opacity-50 cursor-not-allowed"{% endif %}>
+                                                        +
+                                                    </button>
+                                                </div>
+                                                <button type="submit"
+                                                        class="px-6 py-3 bg-amber-500 hover:bg-amber-600 disabled:bg-gray-400 text-white font-semibold rounded-xl transition-all shadow-sm hover:shadow-md hover:scale-105 disabled:cursor-not-allowed disabled:hover:scale-100"
+                                                        id="update-btn-{{ item.id }}">
+                                                    <span class="flex items-center gap-2">
+                                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+                                                        </svg>
+                                                        Update</span>
+                                                </button>
+                                            </form>
+                                        </div>
+                                        
+                                        <div class="w-full flex flex-row justify-between sm:justify-end items-center gap-4">
+                                            <!-- Remove Button -->
+                                            <div class="mt-4 flex justify-between items-center">
+                                                <a href="{% url 'cart:cart_remove' item.id %}"
+                                                onclick="return confirm('Remove this item from cart?')"
+                                                class=" remove-btn inline-flex items-center gap-2 px-4 py-3 text-red-600 hover:text-white hover:bg-red-600 font-medium rounded-lg transition-all text-sm shadow-sm hover:shadow-md">
+                                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                                                    </svg>
+                                                    Remove Item
+                                                </a>
+                                            </div>
+
+                                               <!-- Price -->
+                                            <div class="text-right lg:text-left">
+                                                <p class="text-base text-gray-500 mb-1">Price: <span class="font-medium">PKR {{ item.price|floatformat:0 }}</span></p>
+                                                <p class="text-2xl lg:text-3xl font-bold text-amber-600">PKR {{ item.total_price|floatformat:0 }}</p>
+                                            </div>
+                                            
+                                        </div>
+                                    </div>
+                                </div>
+
+                               
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            <!-- Cart Summary (Sidebar) -->
+            <div class="xl:col-span-1 mt-4 px-4 sm:px-6 lg:px-8">
+                <div class="bg-white rounded-2xl shadow-lg p-6 sticky top-24">
+                    <h3 class="text-xl font-semibold text-gray-800 mb-6">Cart Summary</h3>
+
+                    <!-- Order Summary -->
+                    <div class="space-y-4 mb-6">
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-600">Items ({{ item_count }}):</span>
+                            <span class="text-gray-800 font-medium">PKR {{ cart_total|floatformat:0 }}</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-600">Shipping:</span>
+                            <span class="text-green-600 font-medium">Free</span>
+                        </div>
+                        <div class="border-t border-gray-200 pt-4">
+                            <div class="flex justify-between items-center text-lg font-semibold">
+                                <span class="text-gray-800">Total:</span>
+                                <span class="text-amber-600">PKR {{ cart_total|floatformat:0 }}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Actions -->
+                    <div class="space-y-3">
+                        <a href="#"
+                           class="w-full inline-flex items-center justify-center px-6 py-3 bg-amber-500 hover:bg-amber-600 text-white font-semibold rounded-xl transition-colors shadow-lg hover:shadow-xl">
+                            {% load static %}
+                            <img src="{% static 'icons/shopping-cart-outline-svgrepo-com.svg' %}" alt="Checkout" class="w-5 h-5 mr-2 filter-white">
+                            Proceed to Checkout
+                        </a>
+
+                        <a href="{% url 'catalog:index' %}"
+                           class="w-full inline-flex items-center justify-center px-6 py-3 border-2 border-gray-300 text-gray-700 hover:border-amber-500 hover:text-amber-600 font-medium rounded-xl transition-colors">
+                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+                            </svg>
+                            Continue Shopping
+                        </a>
+                    </div>
+
+                   
+                </div>
+            </div>
+        </div>
+
+        {% else %}
+        <!-- Empty Cart -->
+        <div class="max-w-2xl mx-auto text-center py-16">
+            <div class="w-32 h-32 mx-auto mb-8 bg-gray-100 rounded-full flex items-center justify-center">
+                {% load static %}
+                <img src="{% static 'icons/shopping-cart-outline-svgrepo-com.svg' %}" alt="Empty Cart" class="w-16 h-16 text-gray-400">
+            </div>
+            <h3 class="text-2xl font-semibold text-gray-900 mb-4">Your cart is empty</h3>
+            <p class="text-gray-600 mb-8 text-lg">Looks like you haven't added any items to your cart yet.</p>
+            <a href="{% url 'catalog:index' %}" class="inline-flex items-center px-8 py-4 bg-amber-500 hover:bg-amber-600 text-white font-semibold rounded-xl transition-colors shadow-lg hover:shadow-xl text-lg">
+                <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
+                </svg>
+                Start Shopping
+            </a>
+        </div>
+        {% endif %}
     </div>
+</div>
+
+<script>
+// Enhanced quantity update functions with stock validation
+function updateQuantity(button, change) {
+    const container = button.parentElement;
+    const input = container.querySelector('input[type="number"]');
+    const minusBtn = container.querySelector('button:first-child');
+    const plusBtn = container.querySelector('button:last-child');
+    const maxStock = parseInt(input.getAttribute('max'));
+    const currentValue = parseInt(input.value);
+    const newValue = currentValue + change;
+
+    if (newValue >= 1 && newValue <= maxStock) {
+        input.value = newValue;
+
+        // Update button states
+        minusBtn.disabled = newValue <= 1;
+        plusBtn.disabled = newValue >= maxStock;
+
+        // Add visual feedback
+        button.style.transform = 'scale(0.9)';
+        setTimeout(() => {
+            button.style.transform = 'scale(1)';
+        }, 150);
+
+        // Add pulse effect to input
+        input.style.transform = 'scale(1.05)';
+        setTimeout(() => {
+            input.style.transform = 'scale(1)';
+        }, 150);
+    }
+}
+
+// Validate quantity input
+function validateQuantity(input) {
+    const value = parseInt(input.value);
+    const maxStock = parseInt(input.getAttribute('max'));
+    const minStock = parseInt(input.getAttribute('min'));
+    const container = input.parentElement;
+    const minusBtn = container.querySelector('button:first-child');
+    const plusBtn = container.querySelector('button:last-child');
+
+    if (value < minStock) {
+        input.value = minStock;
+    } else if (value > maxStock) {
+        input.value = maxStock;
+    }
+
+    // Update button states
+    const currentVal = parseInt(input.value);
+    minusBtn.disabled = currentVal <= minStock;
+    plusBtn.disabled = currentVal >= maxStock;
+}
+
+// Enhanced form submission with loading states
+document.addEventListener('DOMContentLoaded', function() {
+    // Add loading state to update buttons
+    const updateButtons = document.querySelectorAll('button[type="submit"]');
+    updateButtons.forEach(button => {
+        button.addEventListener('click', function(e) {
+            const form = button.closest('form');
+            const input = form.querySelector('input[name="quantity"]');
+            const quantity = parseInt(input.value);
+            const maxStock = parseInt(input.getAttribute('max'));
+
+            console.log('Form submission triggered');
+            console.log('Quantity:', quantity);
+            console.log('Max stock:', maxStock);
+            console.log('Form action:', form.action);
+
+            // Validate quantity before submission
+            if (quantity > maxStock) {
+                alert(`Sorry, only ${maxStock} items are available in stock.`);
+                e.preventDefault();
+                return;
+            }
+
+            if (quantity <= 0) {
+                alert('Quantity must be at least 1');
+                e.preventDefault();
+                return;
+            }
+
+            // Show loading state
+            const originalHTML = button.innerHTML;
+            button.innerHTML = `
+                <span class="flex items-center gap-2">
+                    <svg class="w-4 h-4 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+                    </svg>
+                    Updating...
+                </span>
+            `;
+            button.disabled = true;
+
+            // Re-enable after form submission (will happen automatically)
+            setTimeout(() => {
+                button.innerHTML = originalHTML;
+                button.disabled = false;
+            }, 3000);
+        });
+    });
+
+    // Initialize button states on page load
+    const quantityContainers = document.querySelectorAll('.flex.items-center.border-2');
+    quantityContainers.forEach(container => {
+        const input = container.querySelector('input[type="number"]');
+        const minusBtn = container.querySelector('button:first-child');
+        const plusBtn = container.querySelector('button:last-child');
+        const currentValue = parseInt(input.value);
+        const maxStock = parseInt(input.getAttribute('max'));
+
+        minusBtn.disabled = currentValue <= 1;
+        plusBtn.disabled = currentValue >= maxStock;
+    });
+
+    // Add visual feedback to quantity buttons
+    const quantityButtons = document.querySelectorAll('button[onclick*="updateQuantity"]');
+    quantityButtons.forEach(button => {
+        button.addEventListener('mousedown', function() {
+            if (!this.disabled) {
+                this.style.transform = 'scale(0.85)';
+            }
+        });
+
+        button.addEventListener('mouseup', function() {
+            if (!this.disabled) {
+                this.style.transform = 'scale(1)';
+            }
+        });
+
+        button.addEventListener('mouseleave', function() {
+            if (!this.disabled) {
+                this.style.transform = 'scale(1)';
+            }
+        });
+    });
+
+    // Add input validation on blur
+    const quantityInputs = document.querySelectorAll('input[name="quantity"]');
+    quantityInputs.forEach(input => {
+        input.addEventListener('blur', function() {
+            validateQuantity(this);
+        });
+
+        input.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                const form = this.closest('form');
+                const submitBtn = form.querySelector('button[type="submit"]');
+                submitBtn.click();
+            }
+        });
+    });
+
+    // Add form submission debugging
+    const updateForms = document.querySelectorAll('form[id^="update-form-"]');
+    updateForms.forEach(form => {
+        form.addEventListener('submit', function(e) {
+            console.log('Form submitted:', form.id);
+            console.log('Form data:', new FormData(form));
+            console.log('Action URL:', form.action);
+        });
+    });
+});
+</script>
+
+<style>
+/* Enhanced cart icon filters */
+.filter-white {
+    filter: brightness(0) invert(1);
+}
+
+.filter-current {
+    filter: brightness(0) invert(0.5);
+}
+
+/* Enhanced quantity controls */
+.quantity-controls {
+    position: relative;
+}
+
+.quantity-controls button {
+    transition: all 0.2s ease;
+    user-select: none;
+}
+
+.quantity-controls button:not(:disabled):hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.quantity-controls button:not(:disabled):active {
+    transform: translateY(0);
+}
+
+.quantity-controls button:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    background-color: #f3f4f6 !important;
+    color: #9ca3af !important;
+}
+
+.quantity-controls input:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.1);
+}
+
+/* Enhanced remove button */
+.remove-btn {
+    transition: all 0.2s ease;
+}
+
+.remove-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* Loading animation for update button */
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.animate-spin {
+    animation: spin 1s linear infinite;
+}
+
+/* Enhanced form styling */
+.quantity-controls form {
+    position: relative;
+}
+
+/* Stock indicator styling */
+.quantity-controls .bg-gray-100 {
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1024px) {
+    .quantity-controls {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 1rem;
+    }
+
+    .quantity-controls .flex {
+        justify-content: center;
+    }
+
+    .quantity-controls button {
+        min-width: 48px;
+    }
+}
+
+@media (max-width: 640px) {
+    .quantity-controls .flex.items-center.gap-4 {
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .quantity-controls .flex.items-center.border-2 {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .quantity-controls button[type="submit"] {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+/* Smooth transitions for all interactive elements */
+* {
+    transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease, transform 0.2s ease, opacity 0.2s ease;
+}
+
+/* Focus states for accessibility */
+.quantity-controls input:focus,
+.quantity-controls button:focus {
+    outline: 2px solid #f59e0b;
+    outline-offset: 2px;
+}
+
+/* Error states */
+.quantity-controls input:invalid {
+    border-color: #ef4444;
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+}
+</style>
+
 {% endblock content %}
