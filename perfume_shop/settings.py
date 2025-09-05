@@ -18,9 +18,6 @@ import cloudinary
 import cloudinary.uploader
 import cloudinary.api
 
-import logging
-logging.warning(f"Cloudinary configured: {bool(os.getenv('CLOUDINARY_CLOUD_NAME'))}")
-
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -31,12 +28,19 @@ dotenv.load_dotenv()
 import logging
 logging.warning(f"Cloudinary CLOUD_NAME: {os.getenv('CLOUDINARY_CLOUD_NAME')}")
 if os.getenv('CLOUDINARY_CLOUD_NAME'):
-    cloudinary.config(
-        cloud_name=os.getenv('CLOUDINARY_CLOUD_NAME'),
-        api_key=os.getenv('CLOUDINARY_API_KEY'),
-        api_secret=os.getenv('CLOUDINARY_API_SECRET'),
-    )
-    logging.warning("Cloudinary configured successfully")
+    try:
+        cloudinary.config(
+            cloud_name=os.getenv('CLOUDINARY_CLOUD_NAME'),
+            api_key=os.getenv('CLOUDINARY_API_KEY'),
+            api_secret=os.getenv('CLOUDINARY_API_SECRET'),
+        )
+        # Test Cloudinary connection
+        result = cloudinary.api.ping()
+        logging.warning(f"Cloudinary ping result: {result}")
+        logging.warning("Cloudinary configured and connected successfully")
+    except Exception as e:
+        logging.error(f"Cloudinary configuration error: {e}")
+        logging.warning("Falling back to local storage")
 else:
     logging.warning("Cloudinary not configured - using local storage")
 
@@ -163,6 +167,7 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 if os.getenv('CLOUDINARY_CLOUD_NAME'):
     MEDIA_URL = '/media/'
     DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+    # Don't set MEDIA_ROOT when using Cloudinary
 else:
     MEDIA_URL = '/media/'
     MEDIA_ROOT = BASE_DIR / 'media'
