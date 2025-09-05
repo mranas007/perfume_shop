@@ -212,7 +212,7 @@
 
                         <div class="flex items-center gap-4">
                             <!-- Desktop Search -->
-                            <form method="get" class="flex items-center gap-2">
+                            <form method="get" class="flex items-center gap-2" onsubmit="return e.target.q.value.trim() !== ''">
                                 {% if request.GET.category_slug %}
                                     <input type="hidden" name="category_slug" value="{{ request.GET.category_slug }}">
                                 {% endif %}
