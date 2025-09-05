@@ -30,11 +30,11 @@ dotenv.load_dotenv()
 SECRET_KEY = 'django-insecure-vi2&^^w-aahtw&48xjw(yt(7n9(8bk4sip^7(hylyhhl27s)u@'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = ['perfumeshop-production-0678.up.railway.app', 'localhost', '127.0.0.1']
-CSRF_TRUSTED_ORIGINS = ['https://perfumeshop-production-0678.up.railway.app']
-SITE_DOMAIN = "https://perfumeshop-production-0678.up.railway.app/"
+ALLOWED_HOSTS = ['perfumeshop-production-a97b.up.railway.app', 'localhost', '127.0.0.1']
+CSRF_TRUSTED_ORIGINS = ['https://perfumeshop-production-a97b.up.railway.app']
+SITE_DOMAIN = "https://perfumeshop-production-a97b.up.railway.app/"
 
 # Application definition
 
