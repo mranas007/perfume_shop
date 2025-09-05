@@ -1,1 +1,1 @@
-web: gunicorn a_core.wsgi
+web: gunicorn perfume_shop.wsgi
