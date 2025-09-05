@@ -1,6 +1,7 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
+from django.contrib import messages
 from .models import Order
 from catalog.models import Product
 
@@ -41,3 +42,35 @@ def orders(request):
         'page_obj': page_obj
     }
     return render(request, 'orders/order_list.html', context)
+
+@login_required
+def order_confirmation(request, order_id):
+    """Display order confirmation page"""
+    order = get_object_or_404(Order, id=order_id, user=request.user)
+
+    # Enhance order with product details
+    order_items = []
+    total_amount = 0
+
+    if order.cart_details:
+        for product_id, quantity in order.cart_details.items():
+            try:
+                product = Product.objects.get(id=product_id)
+                item_total = product.price * quantity if product.price else 0
+                total_amount += item_total
+                order_items.append({
+                    'product': product,
+                    'quantity': quantity,
+                    'price': product.price,
+                    'total': item_total
+                })
+            except Product.DoesNotExist:
+                continue
+
+    order.items = order_items
+    order.total_amount = total_amount
+
+    context = {
+        'order': order,
+    }
+    return render(request, 'orders/order_confirmation.html', context)

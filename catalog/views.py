@@ -2,21 +2,32 @@ from django.shortcuts import render
 from .models import Product, Category
 from django.core.paginator import Paginator
 from django.shortcuts import get_object_or_404
-
+from django.db.models import Q
 
 
 
 def catalog_page(request):
     category_slug = request.GET.get('category_slug', '')
     sort_by = request.GET.get('sort', 'featured')
+    search_query = request.GET.get('q')
 
     # Base queryset
+    products = Product.objects.all()
+
+    # Apply category filter
     if category_slug:
-        products = Product.objects.filter(category__slug__icontains=category_slug)
-        current_category = Category.objects.filter(slug__icontains=category_slug).first()
+        products = products.filter(category__slug=category_slug)
+        current_category = Category.objects.filter(slug=category_slug).first()
     else:
-        products = Product.objects.all()
         current_category = None
+
+    # Apply search filter
+    if search_query:
+        products = products.filter(
+            Q(name__icontains=search_query) |
+            Q(description__icontains=search_query) |
+            Q(brand__icontains=search_query)
+        )
 
     # Apply sorting
     if sort_by == 'price_low':

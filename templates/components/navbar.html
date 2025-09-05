@@ -1,251 +1,568 @@
-<nav id="navbar" class="fixed w-full z-30 transition-all duration-300 bg-gray-900 backdrop-blur-sm py-4">
-    <div class="mx-auto px-4">
-        <div class="flex justify-between items-center">
+{% load static %}
+<nav id="navbar" class="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-sm shadow-lg border-b border-gray-100 transition-all duration-300">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between items-center h-16">
+            
             <!-- Logo -->
             <div class="flex items-center">
-                <a href="{% url 'home' %}" class="desk-nav text-2xl font-bold text-white drop-shadow-lg hover:scale-105 transition-transform duration-300">
-                    <span class="text-amber-400">Adnan</span>Perfume
+                <a href="{% url 'home' %}" class="text-2xl font-bold hover:scale-105 transition-transform duration-300">
+                    <span class="text-amber-500">Adnan</span>
+                    <span class="text-gray-800">Perfume</span>
                 </a>
             </div>
 
             <!-- Desktop Navigation -->
-            <div class="hidden lg:flex items-center space-x-8">
-                <a href="{% url 'home' %}" class="desk-nav font-medium text-white hover:text-amber-400 transition relative group">
+            <div class="hidden md:flex items-center space-x-8">
+                <a href="{% url 'home' %}" 
+                   class="relative px-3 py-2 text-gray-700 hover:text-amber-600 font-medium transition-colors duration-300 group {% if request.path == '/' %}text-amber-600{% endif %}">
                     Home
-                    <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-amber-400 group-hover:w-full {% if request.path == '/' %}w-full{% endif %} transition-all duration-300"></span>
+                    <span class="absolute bottom-0 left-0 w-full h-0.5 bg-amber-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 {% if request.path == '/' %}scale-x-100{% endif %}"></span>
                 </a>
-                <a href="{% url 'catalog:index' %}" class="desk-nav font-medium text-white hover:text-amber-400 transition relative group">
+
+                <a href="{% url 'catalog:index' %}" 
+                   class="relative px-3 py-2 text-gray-700 hover:text-amber-600 font-medium transition-colors duration-300 group {% if '/catalog' in request.path %}text-amber-600{% endif %}">
                     Catalog
-                    <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-amber-400 group-hover:w-full {% if '/catalog' in request.path %}w-full{% endif %} transition-all duration-300"></span>
+                    <span class="absolute bottom-0 left-0 w-full h-0.5 bg-amber-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 {% if '/catalog' in request.path %}scale-x-100{% endif %}"></span>
                 </a>
-                <a href="{% url 'about' %}" class="desk-nav font-medium text-white hover:text-amber-400 transition relative group">
-                    About Us
-                    <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-amber-400 group-hover:w-full {% if '/about' in request.path %}w-full{% endif %} transition-all duration-300"></span>
+
+                <a href="{% url 'about' %}" 
+                   class="relative px-3 py-2 text-gray-700 hover:text-amber-600 font-medium transition-colors duration-300 group {% if '/about' in request.path %}text-amber-600{% endif %}">
+                    About
+                    <span class="absolute bottom-0 left-0 w-full h-0.5 bg-amber-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 {% if '/about' in request.path %}scale-x-100{% endif %}"></span>
                 </a>
-                <a href="{% url 'contact_us' %}" class="desk-nav font-medium text-white hover:text-amber-400 transition relative group">
+
+                <a href="{% url 'contact_us' %}" 
+                   class="relative px-3 py-2 text-gray-700 hover:text-amber-600 font-medium transition-colors duration-300 group {% if '/contact' in request.path %}text-amber-600{% endif %}">
                     Contact
-                    <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-amber-400 group-hover:w-full {% if '/contact' in request.path %}w-full{% endif %} transition-all duration-300"></span>
+                    <span class="absolute bottom-0 left-0 w-full h-0.5 bg-amber-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 {% if '/contact' in request.path %}scale-x-100{% endif %}"></span>
                 </a>
             </div>
 
-            <!-- Right Side (Auth + Cart + Mobile Button) -->
-            <div class="flex items-center space-x-4">
-                {% if user.is_authenticated%}
-                <!-- Cart Icon (Desktop) -->
-                    {% if user.is_staff is not True %}
-                        <a href="{% url 'cart:cart_detail' %}" class="hidden lg:flex items-center relative p-2 text-white hover:text-amber-400 transition-colors">
-                            {% load static %}
-                            <img src="{% static 'icons/shopping-cart-outline-svgrepo-com.svg' %}" alt="Shopping Cart" class="w-6 h-6 filter-white">
-                            {% if cart_count > 0 %}
-                                <span   
-                                class="absolute bg-amber-500 text-white text-xs font-bold rounded-full h-4 w-4 flex items-center justify-center"
-                                style="top: 0px;right: 0px;">
-                                    {{ cart_count }}
-                                </span>
-                            {% endif %}
-                        </a>
-                    {% endif %}
+            <!-- Right Side Actions -->
+            <div class="flex items-center space-x-3">
+                
+                <!-- Search Button -->
+                <button id="searchBtn" class="p-2 text-gray-600 hover:text-amber-600 hover:bg-amber-50 rounded-full transition-all duration-300">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                    </svg>
+                </button>
 
-                <!-- Desktop Profile Dropdown -->
-                <div class="hidden lg:block relative">
-                    <button id="profileDropdownBtn" class="flex items-center py-2 px-3 text-white hover:text-amber-400 transition">
-                        <span class="flex items-center">
-                            <span class="w-8 h-8 rounded-full bg-amber-500 flex items-center justify-center text-white font-medium mr-2">
-                                {{ user.name|slice:":1"|upper }}
-                            </span>
-                            <span>{{ user.name }}</span>
-                        </span>
-                        <svg class="w-3 h-3 ml-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
-                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
-                        </svg>
-                    </button>
-                    <!-- Desktop Dropdown menu -->
-                    <div id="profileDropdownMenu" class="hidden absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg z-50">
-                        <ul class="py-2 text-sm text-gray-700">
-                            {% if user.is_staff %}
-                                <li><a href="{% url 'admin:index' %}" class="block px-4 py-2 hover:bg-gray-100">Admin Panel</a></li>
-                            {% endif %}
-                            <li><a href="{% url 'accounts:profile' %}" class="block px-4 py-2 hover:bg-gray-100">Profile</a></li>
-                            {% if user.is_staff is not True%}
-                                <li><a href="{% url 'orders:index' %}" class="block px-4 py-2 hover:bg-gray-100">My Orders</a></li>
-                            {% endif %}
-                        </ul>
-                        <div class="py-1 border-t border-gray-200">
-                            <form action="{% url 'accounts:logout' %}" method="post">
-                                {% csrf_token %}
-                                <button type="submit" class="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50">
-                                    Logout
-                                </button>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-                {% else %}
-                <!-- Desktop Auth Buttons -->
-                <div class="hidden lg:flex items-center space-x-3">
-                    <a href="{% url 'accounts:login' %}" class="text-amber-400 px-4 py-2 border border-amber-400 rounded-full hover:bg-amber-400 hover:text-white transition-all text-sm font-medium">
-                        Login
-                    </a>
-                    <a href="{% url 'accounts:register' %}" class="px-4 py-2 bg-amber-500 hover:bg-amber-600 text-white rounded-full transition-colors text-sm font-medium">
-                        Register
-                    </a>
-                </div>
-                {% endif %}
-
-                <!-- Cart Icon (Mobile) -->
-                {% if user.is_authenticated %}
-                <a href="{% url 'cart:cart_detail' %}" class="lg:hidden relative p-2 text-white hover:text-amber-400 transition-colors">
-                    {% load static %}
-                    <img src="{% static 'icons/shopping-cart-outline-svgrepo-com.svg' %}" alt="Shopping Cart" class="w-6 h-6 filter-white">
+                <!-- Cart Icon (Visible on all screens for authenticated non-staff users) -->
+                {% if user.is_authenticated and not user.is_staff %}
+                <a href="{% url 'cart:cart_detail' %}" class="relative p-2 text-gray-600 hover:text-amber-600 hover:bg-amber-200 rounded-full transition-all duration-300">
+                    {% comment %} <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-1.1 5H19M7 13l-1.1 5M7 13l-1.1-5"/>
+                    </svg> {% endcomment %}
+                    <img src="{% static "icons/cart.svg" %}" alt="cart svg" class="w-5 h-5 opacity-10 hover:pointer-cursor" />
                     {% if cart_count > 0 %}
-                    <span 
-                        class="absolute bg-amber-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center"
-                        style="top: -1px;right: -1px;">
+                    <span class="absolute -top-1 -right-1 bg-amber-500 text-white text-xs font-bold rounded-full min-w-[18px] h-[18px] flex items-center justify-center px-1">
                         {{ cart_count }}
                     </span>
                     {% endif %}
                 </a>
                 {% endif %}
 
-                <!-- Mobile menu button -->
-                <div class="lg:hidden">
-                    <button id="mobileMenuBtn" class="text-white hover:text-amber-400 focus:outline-none transition p-2">
-                        <svg id="mobileMenuIconOpen" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
-                        </svg>
-                        <svg id="mobileMenuIconClose" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                {% if user.is_authenticated %}
+                <!-- Profile Dropdown -->
+                <div class="relative hidden md:block">
+                    <button id="profileBtn" class="flex items-center space-x-2 px-3 py-2 text-gray-700 hover:text-amber-600 rounded-lg hover:bg-amber-50 transition-all duration-300">
+                        <div class="w-8 h-8 bg-amber-500 rounded-full flex items-center justify-center text-white font-medium text-sm">
+                            {{ user.name|slice:":1"|upper }}
+                        </div>
+                        <span class="text-sm font-medium">{{ user.name|truncatechars:15 }}</span>
+                        <svg class="w-4 h-4 transition-transform duration-300" id="profileChevron" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
                         </svg>
                     </button>
-                </div>
-            </div>
-        </div>
 
-        <!-- Mobile Menu (slides down instead of side panel) -->
-        <div id="mobileMenu" class="lg:hidden hidden bg-gray-800 mt-4 rounded-lg shadow-lg overflow-hidden">
-            <!-- Navigation Links -->
-            <div class="py-4">
-                <a href="{% url 'home' %}" class="block px-6 py-3 text-white hover:text-amber-400 hover:bg-gray-700 transition font-medium {% if request.path == '/' %}bg-gray-700 text-amber-400{% endif %}">
-                    Home
-                </a>
-                <a href="{% url 'catalog:index' %}" class="block px-6 py-3 text-white hover:text-amber-400 hover:bg-gray-700 transition font-medium {% if '/catalog' in request.path %}bg-gray-700 text-amber-400{% endif %}">
-                    Catalog
-                </a>
-                <a href="{% url 'about' %}" class="block px-6 py-3 text-white hover:text-amber-400 hover:bg-gray-700 transition font-medium {% if '/about' in request.path %}bg-gray-700 text-amber-400{% endif %}">
-                    About Us
-                </a>
-                <a href="{% url 'contact_us' %}" class="block px-6 py-3 text-white hover:text-amber-400 hover:bg-gray-700 transition font-medium {% if '/contact' in request.path %}bg-gray-700 text-amber-400{% endif %}">
-                    Contact
-                </a>
-            </div>
+                    <!-- Dropdown Menu -->
+                    <div id="profileMenu" class="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-xl border border-gray-200 py-2 opacity-0 invisible transform translate-y-2 transition-all duration-300 z-50">
+                        <div class="px-4 py-3 border-b border-gray-200">
+                            <p class="text-sm font-medium text-gray-900">{{ user.name }}</p>
+                            <p class="text-xs text-gray-500">{{ user.email }}</p>
+                        </div>
 
-            <!-- Mobile Auth/Profile Section -->
-            <div class="border-t border-gray-700 py-4">
-                {% if user.is_authenticated %}
-                <!-- Mobile Profile Section -->
-                <div class="px-6 py-3">
-                    <div class="flex items-center mb-4">
-                        <span class="w-10 h-10 rounded-full bg-amber-500 flex items-center justify-center text-white font-medium mr-3">
-                            {{ user.name|slice:":1"|upper }}
-                        </span>
-                        <span class="text-white font-medium">{{ user.name }}</span>
-                    </div>
-                    <div class="space-y-2">
-                        {% if user.is_staff %}
-                        <a href="{% url 'admin:index' %}" class="block px-4 py-2 text-gray-300 hover:text-amber-400 hover:bg-gray-700 rounded transition">
-                            Admin Panel
-                        </a>
-                        {% endif %}
-                        <a href="{% url 'accounts:profile' %}" class="block px-4 py-2 text-gray-300 hover:text-amber-400 hover:bg-gray-700 rounded transition">
-                            Profile
-                        </a>
-                        <a href="{% url 'cart:cart_detail' %}" class="block px-4 py-2 text-gray-300 hover:text-amber-400 hover:bg-gray-700 rounded transition">
-                            My Cart {% if cart_count > 0 %}({{ cart_count }}){% endif %}
-                        </a>
-                        <a href="{% url 'orders:index' %}" class="block px-4 py-2 text-gray-300 hover:text-amber-400 hover:bg-gray-700 rounded transition">
-                            My Orders
-                        </a>
-                        <form action="{% url 'accounts:logout' %}" method="post" class="mt-4">
-                            {% csrf_token %}
-                            <button type="submit" class="w-full text-left px-4 py-2 text-red-400 hover:text-red-300 hover:bg-gray-700 rounded transition">
-                                Logout
-                            </button>
-                        </form>
+                        <div class="py-2">
+                            {% if user.is_staff %}
+                            <a href="{% url 'admin:index' %}" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-amber-50 hover:text-amber-600 transition-colors">
+                                <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                </svg>
+                                Admin Panel
+                            </a>
+                            {% endif %}
+
+                            <a href="{% url 'accounts:profile' %}" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-amber-50 hover:text-amber-600 transition-colors">
+                                <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                                </svg>
+                                Profile
+                            </a>
+
+                            {% if not user.is_staff %}
+                            <a href="{% url 'orders:index' %}" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-amber-50 hover:text-amber-600 transition-colors">
+                                <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                                </svg>
+                                My Orders
+                            </a>
+                            {% endif %}
+                        </div>
+
+                        <div class="border-t border-gray-200 pt-2">
+                            <form action="{% url 'accounts:logout' %}" method="post" class="px-4">
+                                {% csrf_token %}
+                                <button type="submit" class="flex items-center w-full px-4 py-2 text-sm text-red-600 hover:bg-red-50 hover:text-red-700 transition-colors rounded-lg">
+                                    <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+                                    </svg>
+                                    Logout
+                                </button>
+                            </form>
+                        </div>
                     </div>
                 </div>
+                
                 {% else %}
-                <!-- Mobile Auth Buttons -->
-                <div class="px-6 space-y-3">
-                    <a href="{% url 'accounts:login' %}" class="block w-full py-3 text-center border border-amber-400 text-amber-400 rounded-full hover:bg-amber-400 hover:text-white transition font-medium">
+                <!-- Auth Buttons - Desktop -->
+                <div class="hidden md:flex items-center space-x-3">
+                    <a href="{% url 'accounts:login' %}" class="px-4 py-2 text-sm font-medium text-amber-600 hover:text-amber-700 border border-amber-600 hover:border-amber-700 rounded-full transition-all duration-300">
                         Login
                     </a>
-                    <a href="{% url 'accounts:register' %}" class="block w-full py-3 text-center bg-amber-500 hover:bg-amber-600 text-white rounded-full transition font-medium">
+                    <a href="{% url 'accounts:register' %}" class="px-4 py-2 text-sm font-medium bg-amber-500 hover:bg-amber-600 text-white rounded-full transition-all duration-300 shadow-md hover:shadow-lg">
                         Register
                     </a>
                 </div>
                 {% endif %}
+
+                <!-- Mobile Menu Button -->
+                <button id="mobileMenuBtn" class="md:hidden p-2 text-gray-600 hover:text-amber-600 hover:bg-amber-50 rounded-full transition-all duration-300">
+                    <svg id="menuIcon" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                    </svg>
+                </button>
             </div>
+        </div>
+    </div>
+
+    <!-- Mobile Menu Overlay -->
+    <div id="mobileMenuOverlay" class="fixed  top-[64px]  inset-0 bg-black/50 z-40 md:hidden opacity-0 invisible transition-all duration-300"></div>
+
+    <!-- Mobile Menu Panel -->
+    <div id="mobileMenu" class="fixed top-[64px] right-0 h-full w-80 max-w-[90vw] bg-white shadow-2xl z-50 md:hidden transform translate-x-full transition-transform duration-300">
+
+        <!-- Mobile Menu Content -->
+        <div class="flex-1 overflow-y-auto py-6 bg-white">
+            
+            <!-- User Info (if authenticated) -->
+            {% if user.is_authenticated %}
+            <div class="px-6 mb-6 pb-6 border-b border-gray-100">
+                <div class="flex items-center space-x-3 mb-4">
+                    <div class="w-12 h-12 bg-amber-500 rounded-full flex items-center justify-center text-white font-bold text-lg">
+                        {{ user.name|slice:":1"|upper }}
+                    </div>
+                    <div>
+                        <p class="font-medium text-gray-900">{{ user.name }}</p>
+                        <p class="text-sm text-gray-500">{{ user.email }}</p>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Navigation Links -->
+            <div class="px-6 mb-6">
+                <h4 class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-4">Navigation</h4>
+                <nav class="space-y-1">
+                    <a href="{% url 'home' %}" class="flex items-center px-3 py-3 text-gray-700 hover:bg-amber-50 hover:text-amber-600 rounded-lg transition-all duration-300 {% if request.path == '/' %}bg-amber-50 text-amber-600{% endif %}">
+                        <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+                        </svg>
+                        Home
+                    </a>
+
+                    <a href="{% url 'catalog:index' %}" class="flex items-center px-3 py-3 text-gray-700 hover:bg-amber-50 hover:text-amber-600 rounded-lg transition-all duration-300 {% if '/catalog' in request.path %}bg-amber-50 text-amber-600{% endif %}">
+                        <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
+                        </svg>
+                        Catalog
+                    </a>
+
+                    <a href="{% url 'about' %}" class="flex items-center px-3 py-3 text-gray-700 hover:bg-amber-50 hover:text-amber-600 rounded-lg transition-all duration-300 {% if '/about' in request.path %}bg-amber-50 text-amber-600{% endif %}">
+                        <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                        About Us
+                    </a>
+
+                    <a href="{% url 'contact_us' %}" class="flex items-center px-3 py-3 text-gray-700 hover:bg-amber-50 hover:text-amber-600 rounded-lg transition-all duration-300 {% if '/contact' in request.path %}bg-amber-50 text-amber-600{% endif %}">
+                        <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                        </svg>
+                        Contact
+                    </a>
+                </nav>
+            </div>
+
+            <!-- Account Section -->
+            {% if user.is_authenticated %}
+            <div class="px-6 mb-6">
+                <h4 class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-4">Account</h4>
+                <div class="space-y-1">
+                    {% if user.is_staff %}
+                    <a href="{% url 'admin:index' %}" class="flex items-center px-3 py-3 text-gray-700 hover:bg-amber-50 hover:text-amber-600 rounded-lg transition-all duration-300">
+                        <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                        </svg>
+                        Admin Panel
+                    </a>
+                    {% endif %}
+
+                    <a href="{% url 'accounts:profile' %}" class="flex items-center px-3 py-3 text-gray-700 hover:bg-amber-50 hover:text-amber-600 rounded-lg transition-all duration-300">
+                        <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                        </svg>
+                        Profile
+                    </a>
+
+                    {% if not user.is_staff %}
+                    <a href="{% url 'orders:index' %}" class="flex items-center px-3 py-3 text-gray-700 hover:bg-amber-50 hover:text-amber-600 rounded-lg transition-all duration-300">
+                        <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                        </svg>
+                        My Orders
+                    </a>
+                    {% endif %}
+
+                    <form action="{% url 'accounts:logout' %}" method="post" class="mt-4">
+                        {% csrf_token %}
+                        <button type="submit" class="flex items-center w-full px-3 py-3 text-red-600 hover:bg-red-50 hover:text-red-700 rounded-lg transition-all duration-300">
+                            <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+                            </svg>
+                            Logout
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            {% else %}
+            <!-- Auth Section for Non-authenticated Users -->
+            <div class="px-6">
+                <h4 class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-4">Account</h4>
+                <div class="space-y-3">
+                    <a href="{% url 'accounts:login' %}" class="flex items-center justify-center px-4 py-3 border border-amber-600 text-amber-600 hover:bg-amber-600 hover:text-white rounded-lg transition-all duration-300 font-medium">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+                        </svg>
+                        Login
+                    </a>
+
+                    <a href="{% url 'accounts:register' %}" class="flex items-center justify-center px-4 py-3 bg-amber-500 hover:bg-amber-600 text-white rounded-lg transition-all duration-300 font-medium shadow-md hover:shadow-lg">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/>
+                        </svg>
+                        Register
+                    </a>
+                </div>
+            </div>
+            {% endif %}
         </div>
     </div>
 </nav>
 
-<style>
-/* Make cart icon white to match navbar */
-.filter-white {
-    filter: brightness(0) invert(1);
-}
-
-/* Hover effect for cart icon */
-.filter-white:hover {
-    filter: brightness(0) invert(0.8) sepia(1) saturate(5) hue-rotate(25deg);
-}
-</style>
+<!-- Search Modal -->
+<div id="searchModal" class="fixed inset-0 bg-black/50 z-50 opacity-0 invisible transition-all duration-300">
+    <div class="flex items-center justify-center min-h-screen p-4">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md transform scale-95 transition-transform duration-300" id="searchModalContent">
+            <div class="p-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-lg font-semibold text-gray-900">Search Products</h3>
+                    <button id="closeSearch" class="text-gray-400 hover:text-gray-600 transition-colors">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                        </svg>
+                    </button>
+                </div>
+                <form method="get" action="{% url 'catalog:index' %}">
+                    <div class="relative mb-4">
+                        <input type="text" id="searchInput" name="q" value="{{ request.GET.q }}" placeholder="Search products..."
+                                class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent text-sm">
+                        <svg class="w-5 h-5 absolute left-3 top-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                        </svg>
+                    </div>
+                    <button type="submit" class="w-full bg-amber-500 hover:bg-amber-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+                        Search
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Desktop Profile Dropdown (simple toggle)
-    const profileBtn = document.getElementById('profileDropdownBtn');
-    const profileMenu = document.getElementById('profileDropdownMenu');
+    // Get all the elements we need
+    const navbar = document.getElementById('navbar');
+    const profileBtn = document.getElementById('profileBtn');
+    const profileMenu = document.getElementById('profileMenu');
+    const profileChevron = document.getElementById('profileChevron');
+    const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+    const mobileMenu = document.getElementById('mobileMenu');
+    const mobileMenuOverlay = document.getElementById('mobileMenuOverlay');
+    const menuIcon = document.getElementById('menuIcon');
+    const searchBtn = document.getElementById('searchBtn');
+    const searchModal = document.getElementById('searchModal');
+    const searchModalContent = document.getElementById('searchModalContent');
+    const closeSearch = document.getElementById('closeSearch');
+    const searchInput = document.getElementById('searchInput');
 
+    // Enhanced scroll-based navbar styling
+    let scrollTimeout;
+    window.addEventListener('scroll', function() {
+        clearTimeout(scrollTimeout);
+        scrollTimeout = setTimeout(function() {
+            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            
+            if (scrollTop > 50) {
+                navbar.classList.remove('bg-white/95');
+                navbar.classList.add('bg-white/98', 'backdrop-blur-md');
+            } else {
+                navbar.classList.remove('bg-white/98', 'backdrop-blur-md');
+                navbar.classList.add('bg-white/95');
+            }
+        }, 10);
+    });
+
+    // Profile dropdown functionality
     if (profileBtn && profileMenu) {
         profileBtn.addEventListener('click', function(e) {
             e.stopPropagation();
-            profileMenu.classList.toggle('hidden');
+            const isOpen = profileMenu.classList.contains('opacity-100');
+            
+            if (isOpen) {
+                closeProfileMenu();
+            } else {
+                openProfileMenu();
+            }
         });
+
+        function openProfileMenu() {
+            profileMenu.classList.remove('opacity-0', 'invisible', 'translate-y-2');
+            profileMenu.classList.add('opacity-100', 'visible', 'translate-y-0');
+            if (profileChevron) {
+                profileChevron.style.transform = 'rotate(180deg)';
+            }
+        }
+
+        function closeProfileMenu() {
+            profileMenu.classList.remove('opacity-100', 'visible', 'translate-y-0');
+            profileMenu.classList.add('opacity-0', 'invisible', 'translate-y-2');
+            if (profileChevron) {
+                profileChevron.style.transform = 'rotate(0deg)';
+            }
+        }
 
         // Close dropdown when clicking outside
         document.addEventListener('click', function(e) {
-            if (!profileMenu.classList.contains('hidden') && !profileMenu.contains(e.target)) {
-                profileMenu.classList.add('hidden');
+            if (!profileMenu.contains(e.target) && !profileBtn.contains(e.target)) {
+                closeProfileMenu();
             }
         });
     }
 
-    // Mobile Menu (super simple toggle)
-    const mobileMenuBtn = document.getElementById('mobileMenuBtn');
-    const mobileMenu = document.getElementById('mobileMenu');
-    const openIcon = document.getElementById('mobileMenuIconOpen');
-    const closeIcon = document.getElementById('mobileMenuIconClose');
+    // Mobile menu functionality
+    let isMenuOpen = false;
 
-    if (mobileMenuBtn && mobileMenu) {
+    function openMobileMenu() {
+        isMenuOpen = true;
+        mobileMenu.classList.remove('translate-x-full');
+        mobileMenu.classList.add('translate-x-0');
+        mobileMenuOverlay.classList.remove('opacity-0', 'invisible');
+        mobileMenuOverlay.classList.add('opacity-100', 'visible');
+        
+        // Animate hamburger to X
+        menuIcon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>';
+        
+        // Prevent body scroll
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeMobileMenu() {
+        isMenuOpen = false;
+        mobileMenu.classList.remove('translate-x-0');
+        mobileMenu.classList.add('translate-x-full');
+        mobileMenuOverlay.classList.remove('opacity-100', 'visible');
+        mobileMenuOverlay.classList.add('opacity-0', 'invisible');
+        
+        // Animate X back to hamburger
+        menuIcon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>';
+        
+        // Restore body scroll
+        document.body.style.overflow = '';
+    }
+
+    if (mobileMenuBtn) {
         mobileMenuBtn.addEventListener('click', function() {
-            // Toggle menu visibility
-            mobileMenu.classList.toggle('hidden');
-
-            // Toggle icons
-            openIcon.classList.toggle('hidden');
-            closeIcon.classList.toggle('hidden');
+            if (isMenuOpen) {
+                closeMobileMenu();
+            } else {
+                openMobileMenu();
+            }
         });
+    }
 
-        // Close mobile menu when clicking on navigation links
-        const mobileLinks = mobileMenu.querySelectorAll('a');
-        mobileLinks.forEach(link => {
+    if (mobileMenuOverlay) {
+        mobileMenuOverlay.addEventListener('click', closeMobileMenu);
+    }
+
+    // Search modal functionality
+    function openSearchModal() {
+        searchModal.classList.remove('opacity-0', 'invisible');
+        searchModal.classList.add('opacity-100', 'visible');
+        searchModalContent.classList.remove('scale-95');
+        searchModalContent.classList.add('scale-100');
+        document.body.style.overflow = 'hidden';
+        
+        // Focus on search input after animation
+        setTimeout(function() {
+            if (searchInput) {
+                searchInput.focus();
+            }
+        }, 300);
+    }
+
+    function closeSearchModal() {
+        searchModal.classList.remove('opacity-100', 'visible');
+        searchModal.classList.add('opacity-0', 'invisible');
+        searchModalContent.classList.remove('scale-100');
+        searchModalContent.classList.add('scale-95');
+        document.body.style.overflow = '';
+        
+        // Clear search input
+        if (searchInput) {
+            searchInput.value = '';
+        }
+    }
+
+    if (searchBtn) {
+        searchBtn.addEventListener('click', openSearchModal);
+    }
+
+    if (closeSearch) {
+        closeSearch.addEventListener('click', closeSearchModal);
+    }
+
+    // Close search modal when clicking outside
+    if (searchModal) {
+        searchModal.addEventListener('click', function(e) {
+            if (e.target === searchModal) {
+                closeSearchModal();
+            }
+        });
+    }
+
+    // Handle search input
+    if (searchInput) {
+        searchInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                // Add your search functionality here
+                const searchQuery = searchInput.value.trim();
+                if (searchQuery) {
+                    // Redirect to search results or handle search
+                    console.log('Searching for:', searchQuery);
+                    // Example: window.location.href = `/search?q=${encodeURIComponent(searchQuery)}`;
+                }
+                closeSearchModal();
+            }
+        });
+    }
+
+    // Keyboard shortcuts
+    document.addEventListener('keydown', function(e) {
+        // Escape key - close all modals
+        if (e.key === 'Escape') {
+            closeMobileMenu();
+            closeSearchModal();
+            if (profileMenu && profileMenu.classList.contains('opacity-100')) {
+                closeProfileMenu();
+            }
+        }
+        
+        // Ctrl/Cmd + K - open search
+        if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+            e.preventDefault();
+            openSearchModal();
+        }
+    });
+
+    // Close mobile menu when clicking on navigation links
+    const mobileNavLinks = mobileMenu?.querySelectorAll('a[href]');
+    if (mobileNavLinks) {
+        mobileNavLinks.forEach(link => {
             link.addEventListener('click', function() {
-                mobileMenu.classList.add('hidden');
-                openIcon.classList.remove('hidden');
-                closeIcon.classList.add('hidden');
+                // Small delay to allow navigation to start
+                setTimeout(closeMobileMenu, 100);
             });
         });
     }
+
+    // Smooth scroll for hash links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            const target = document.querySelector(this.getAttribute('href'));
+            if (target) {
+                const navbarHeight = navbar.offsetHeight;
+                const targetPosition = target.offsetTop - navbarHeight - 20;
+                
+                window.scrollTo({
+                    top: targetPosition,
+                    behavior: 'smooth'
+                });
+            }
+        });
+    });
+
+    // Add loading states for buttons
+    const buttons = document.querySelectorAll('button, a');
+    buttons.forEach(button => {
+        button.addEventListener('click', function() {
+            // Add subtle loading effect
+            this.style.transform = 'scale(0.98)';
+            setTimeout(() => {
+                this.style.transform = '';
+            }, 150);
+        });
+    });
+
+    // Optimize animations for reduced motion preference
+    if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        const style = document.createElement('style');
+        style.textContent = `
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+                scroll-behavior: auto !important;
+            }
+        `;
+        document.head.appendChild(style);
+    }
+
+    // Handle window resize
+    let resizeTimeout;
+    window.addEventListener('resize', function() {
+        clearTimeout(resizeTimeout);
+        resizeTimeout = setTimeout(function() {
+            // Close mobile menu on desktop
+            if (window.innerWidth >= 768 && isMenuOpen) {
+                closeMobileMenu();
+            }
+        }, 250);
+    });
 });
 </script>

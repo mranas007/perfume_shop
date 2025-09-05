@@ -12,7 +12,13 @@ class Order(models.Model):
     cart_details = models.JSONField()  # stores {product_id: qty}
     status = models.CharField(
         max_length=20,
-        choices=[("pending", "Pending"), ("confirmed", "Confirmed"), ("completed", "Completed")],
+        choices=[
+            ("pending", "Pending"),
+            ("confirmed", "Confirmed"),
+            ("processing", "Processing"),
+            ("delivered", "Delivered"),
+            ("cancelled", "Cancelled")
+        ],
         default="pending"
     )
     created_at = models.DateTimeField(default=timezone.now)
