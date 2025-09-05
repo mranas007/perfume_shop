@@ -1,6 +1,6 @@
 {% load static %}
 
-<div class="group relative bg-white rounded-2xl shadow-lg hover:shadow-2xl overflow-hidden transition-all duration-300 hover:-translate-y-2 transform-gpu max-w-sm w-full mx-auto h-full flex flex-col" role="article" aria-label="Product card: {{ product.name }}">
+<div class="group relative bg-white rounded-2xl shadow-lg overflow-hidden max-w-sm w-full mx-auto h-full flex flex-col" role="article" aria-label="Product card: {{ product.name }}">
   <!-- Wishlist / Badge -->
   <div class="absolute top-3 right-3 z-10 flex items-center space-x-2">
     {% if user.is_authenticated and product.id in cart_product_ids %}
@@ -56,7 +56,7 @@
     {% endif %}
 
     <!-- Price & Quality Indicators -->
-    <div class="mt-2 pt-3 border-t border-gray-100 grid grid-cols-2 gap-2 text-sm text-gray-500">
+    <div class="mt-2 pt-2 border-t border-gray-100 grid grid-cols-2 gap-2 text-sm text-gray-500">
       {% if product.price %}
       <div class="flex items-center space-x-1 min-w-0">
         <span class="font-semibold text-amber-600 whitespace-nowrap">Rs.{{ product.price|floatformat:0 }}</span>
@@ -68,7 +68,7 @@
         <svg class="w-4 h-4 text-gray-600 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
           <path fill-rule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
         </svg>
-        <span class="font-semibold text-gray-600 whitespace-nowrap">Premium Quality</span>
+        <span class="font-semibold text-gray-600">Premium Quality</span>
       </div>
     </div>
     
@@ -90,20 +90,6 @@
         50% {
             opacity: 0.7;
         }
-    }
-
-    /* Product card hover animations */
-    .group:hover {
-        transform: translateY(-8px);
-        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-    }
-
-    .group img {
-        transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-
-    .group:hover img {
-        transform: scale(1.05);
     }
 
     /* Enhanced button styles for different states */

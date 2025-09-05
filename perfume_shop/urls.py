@@ -12,5 +12,6 @@ urlpatterns = [
     path('account/', include('accounts.urls')),
     path('feedback/', include('feedback.urls')),
 ]
-if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+# Serve media files in development and production (temporary solution)
+# For production, consider using cloud storage like Cloudinary or AWS S3n
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

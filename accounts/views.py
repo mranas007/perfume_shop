@@ -18,8 +18,6 @@ from django.utils.encoding import force_str
 
 
 
-
-
 def login_view(request): # Login View
     if request.user.is_authenticated:
         return redirect('home')  
@@ -87,9 +85,41 @@ def send_activation_email(request, user): # To send an account activation email
     activation_path = reverse("accounts:activate", kwargs={"uidb64": uid, "token": token})
     activation_link = f"{settings.SITE_DOMAIN}{activation_path}"
 
+    html_message = f"""
+    <html>
+    <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
+        <div style="max-width: 600px; margin: 0 auto; padding: 20px;">
+            <h2 style="color: #d97706;">Welcome to Adnan Perfume!</h2>
+
+            <p>Dear <strong>{user.name}</strong>,</p>
+
+            <p>Thank you for registering with Adnan Perfume! We're excited to have you join our community of fragrance enthusiasts.</p>
+
+            <p>To complete your registration and activate your account, please click the button below:</p>
+
+            <div style="text-align: center; margin: 30px 0;">
+                <a href="{activation_link}" style="background-color: #d97706; color: white; padding: 12px 24px; text-decoration: none; border-radius: 5px; font-weight: bold; display: inline-block;">Activate Your Account</a>
+            </div>
+
+            <p style="color: #666; font-size: 14px;">This link will expire in 7 days for security reasons.</p>
+
+            <p>If you did not create an account with us, please ignore this email.</p>
+
+            <hr style="border: none; border-top: 1px solid #eee; margin: 30px 0;">
+
+            <p>For any questions or support, please contact us at <a href="mailto:vision6521@gmail.com" style="color: #d97706;">vision6521@gmail.com</a>.</p>
+
+            <p>Best regards,<br>
+            <strong>Adnan Perfume Team</strong><br>
+            <a href="https://perfumeshop-production-a97b.up.railway.app/" style="color: #d97706;">https://perfumeshop-production-a97b.up.railway.app/</a></p>
+        </div>
+    </body>
+    </html>
+    """
+
     send_mail_to_client(
         subject="Activate your account",
-        message=f"Click the link to activate your account: {activation_link}",
+        message=html_message,
         recipient_list=[user.email],
     )
 
@@ -156,10 +186,38 @@ def send_password_reset_email(request, user): # To send a password reset email
     # Used reverse() instead of hardcoding
     reset_path = reverse("accounts:reset_password", kwargs={"uidb64": uid, "token": token})
     reset_link = f"{settings.SITE_DOMAIN}{reset_path}"
+    html_message = f"""
+    <html>
+    <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
+        <div style="max-width: 600px; margin: 0 auto; padding: 20px;">
+            <h2 style="color: #d97706;">Password Reset Request</h2>
 
+            <p>Dear <strong>{user.name}</strong>,</p>
+
+            <p>We received a request to reset your password for your Adnan Perfume account. If you made this request, please click the button below to reset your password:</p>
+
+            <div style="text-align: center; margin: 30px 0;">
+                <a href="{reset_link}" style="background-color: #d97706; color: white; padding: 12px 24px; text-decoration: none; border-radius: 5px; font-weight: bold; display: inline-block;">Reset Your Password</a>
+            </div>
+
+            <p style="color: #666; font-size: 14px;">This link will expire in 7 days for security reasons.</p>
+
+            <p>If you did not request a password reset, please ignore this email. Your password will remain unchanged.</p>
+
+            <hr style="border: none; border-top: 1px solid #eee; margin: 30px 0;">
+
+            <p>For any questions or support, please contact us at <a href="mailto:vision6521@gmail.com" style="color: #d97706;">vision6521@gmail.com</a>.</p>
+
+            <p>Best regards,<br>
+            <strong>Adnan Perfume Team</strong><br>
+            <a href="https://perfumeshop-production-a97b.up.railway.app/" style="color: #d97706;">https://perfumeshop-production-a97b.up.railway.app/</a></p>
+        </div>
+    </body>
+    </html>
+    """
     send_mail_to_client(
         subject="Reset your password",
-        message=f"Click the link to reset your password: {reset_link}",
+        message=html_message,
         recipient_list=[user.email],
     )
 
