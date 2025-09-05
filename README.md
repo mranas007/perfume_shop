@@ -85,13 +85,6 @@ A Django-based e-commerce application for selling perfumes. This project provide
 - `static/`: CSS, images, and other static assets
 - `templates/`: HTML templates
 
-## Contributing
-
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Submit a pull request
-
 ## License
 
 This project is licensed under the MIT License.
