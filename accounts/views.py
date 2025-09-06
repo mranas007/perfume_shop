@@ -1,3 +1,4 @@
+import logging
 from django.shortcuts import render, redirect
 from perfume_shop import settings
 from .models import User
@@ -14,6 +15,8 @@ from accounts.utils import send_mail_to_client
 from django.urls import reverse
 from django.utils.http import urlsafe_base64_decode
 from django.utils.encoding import force_str
+
+logger = logging.getLogger(__name__)
 
 
 
@@ -117,12 +120,17 @@ def send_activation_email(request, user): # To send an account activation email
     </html>
     """
 
-    send_mail_to_client(
-        subject="Activate your account",
-        message="Please check your email and click the activation link to activate your account.",  # Plain text fallback
-        recipient_list=[user.email],
-        html_message=html_message,
-    )
+    try:
+        send_mail_to_client(
+            subject="Activate your account",
+            message="Please check your email and click the activation link to activate your account.",  # Plain text fallback
+            recipient_list=[user.email],
+            html_message=html_message,
+        )
+        logger.info(f"Activation email sent to {user.email}")
+    except Exception as e:
+        logger.error(f"Failed to send activation email to {user.email}: {str(e)}")
+        raise  # Re-raise to let Django handle it
 
 
 
@@ -216,12 +224,17 @@ def send_password_reset_email(request, user): # To send a password reset email
     </body>
     </html>
     """
-    send_mail_to_client(
-        subject="Reset your password",
-        message="Please check your email and click the password reset link to reset your password.",  # Plain text fallback
-        recipient_list=[user.email],
-        html_message=html_message,
-    )
+    try:
+        send_mail_to_client(
+            subject="Reset your password",
+            message="Please check your email and click the password reset link to reset your password.",  # Plain text fallback
+            recipient_list=[user.email],
+            html_message=html_message,
+        )
+        logger.info(f"Password reset email sent to {user.email}")
+    except Exception as e:
+        logger.error(f"Failed to send password reset email to {user.email}: {str(e)}")
+        raise
 
 
 
