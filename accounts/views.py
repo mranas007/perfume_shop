@@ -68,7 +68,7 @@ def register_view(request): # Registration View
             user.save()
             send_activation_email(request, user)
             messages.success(request, "Registration successful.")
-            return redirect('email_confirmation_alert')
+            return redirect('accounts:email_confirmation')
         else:
             messages.error(request, 'Something went wrong please try again later.')
 
@@ -107,7 +107,7 @@ def send_activation_email(request, user): # To send an account activation email
 
             <hr style="border: none; border-top: 1px solid #eee; margin: 30px 0;">
 
-            <p>For any questions or support, please contact us at <a href="mailto:vision6521@gmail.com" style="color: #d97706;">vision6521@gmail.com</a>.</p>
+            <p>For any questions or support, please contact us at <a href="mailto:adnanperfume84@gmail.com" style="color: #d97706;">adnanperfume84@gmail.com</a>.</p>
 
             <p>Best regards,<br>
             <strong>Adnan Perfume Team</strong><br>
@@ -119,8 +119,9 @@ def send_activation_email(request, user): # To send an account activation email
 
     send_mail_to_client(
         subject="Activate your account",
-        message=html_message,
+        message="Please check your email and click the activation link to activate your account.",  # Plain text fallback
         recipient_list=[user.email],
+        html_message=html_message,
     )
 
 
@@ -206,7 +207,7 @@ def send_password_reset_email(request, user): # To send a password reset email
 
             <hr style="border: none; border-top: 1px solid #eee; margin: 30px 0;">
 
-            <p>For any questions or support, please contact us at <a href="mailto:vision6521@gmail.com" style="color: #d97706;">vision6521@gmail.com</a>.</p>
+            <p>For any questions or support, please contact us at <a href="mailto:adnanperfume84@gmail.com" style="color: #d97706;">adnanperfume84@gmail.com</a>.</p>
 
             <p>Best regards,<br>
             <strong>Adnan Perfume Team</strong><br>
@@ -217,8 +218,9 @@ def send_password_reset_email(request, user): # To send a password reset email
     """
     send_mail_to_client(
         subject="Reset your password",
-        message=html_message,
+        message="Please check your email and click the password reset link to reset your password.",  # Plain text fallback
         recipient_list=[user.email],
+        html_message=html_message,
     )
 
 

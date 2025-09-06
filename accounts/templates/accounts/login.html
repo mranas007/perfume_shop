@@ -4,23 +4,14 @@
 <div class="min-h-screen flex flex-col justify-center py-12 px-2 sm:px-6 lg:px-8 bg-gray-50">
     <div class="sm:mx-auto sm:w-full sm:max-w-md">
         <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">
-            Login to your account
+            Login to Your Account
         </h2>
     </div>
 
     <div class="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-        <div class="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
+        <div class="bg-gradient-to-br from-white to-gray-50 py-8 px-4 shadow-xl rounded-xl sm:px-10 border border-amber-200/60 backdrop-blur-sm">
 
-            <!-- 🔹 Django messages (auth errors, inactive account, etc.) -->
-            {% if messages %}
-                <ul class="mb-4">
-                    {% for message in messages %}
-                        <li class="text-sm text-red-600">{{ message }}</li>
-                    {% endfor %}
-                </ul>
-            {% endif %}
-
-            <!-- 🔹 Non-field errors (general form validation issues) -->
+            <!-- Non-field errors (general form validation issues) -->
             {% if form.non_field_errors %}
                 <div class="mb-4 text-sm text-red-600">
                     {{ form.non_field_errors }}

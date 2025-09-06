@@ -1,8 +1,57 @@
 {% extends "main.html" %}
 
 {% block content %}
-<div class="alert alert-info " role="alert">
-    <h2 class="pt-[100px]">Email Confirmation</h2>
-    <p>Please check your email for your account confirmation link.</p>
+<div class="min-h-screen flex flex-col justify-center py-24 px-2 sm:px-6 lg:px-8 bg-gray-50">
+    <div class="sm:mx-auto sm:w-full sm:max-w-md">
+        <div class="text-center">
+            <!-- Email Icon -->
+            <div class="mx-auto h-16 w-16 bg-amber-100 rounded-full flex items-center justify-center mb-4">
+                <svg class="h-8 w-8 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                </svg>
+            </div>
+            <h2 class="text-3xl font-extrabold text-gray-900 mb-2">
+                Check Your Email
+            </h2>
+            <p class="text-gray-600 mb-8">
+                We've sent you a confirmation link to activate your account
+            </p>
+        </div>
+
+        <div class="bg-gradient-to-br from-white to-gray-50 py-8 px-4 shadow-xl rounded-xl sm:px-10 border border-amber-200/60 backdrop-blur-sm">
+            <div class="text-center">
+                <h3 class="text-lg font-medium text-gray-900 mb-4">
+                    Email Confirmation Required
+                </h3>
+                <p class="text-sm text-gray-600 mb-6">
+                    To complete your registration and start shopping, please click the activation link in the email we just sent you.
+                </p>
+
+                <div class="bg-amber-50 border border-amber-200 rounded-lg p-4 mb-6">
+                    <div class="flex items-center">
+                        <p class="text-sm text-amber-800">
+                            <strong>Didn't receive the email?</strong> Check your spam folder or click below to resend.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="space-y-3">
+                    <a href="{% url 'accounts:resend_activation_email' %}"
+                       class="w-full flex justify-center py-2 px-4 border border-amber-500 rounded-md shadow-sm text-sm font-medium text-amber-600 bg-white hover:bg-amber-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-500 transition-colors duration-200">
+                        Resend Confirmation Email
+                    </a>
+
+                    <a href="{% url 'accounts:login' %}"
+                       class="w-full flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-colors duration-200">
+                        Back to Login
+                    </a>
+                </div>
+
+                <p class="mt-4 text-xs text-gray-500">
+                    The activation link will expire in 7 days for security reasons.
+                </p>
+            </div>
+        </div>
+    </div>
 </div>
 {% endblock content %}
