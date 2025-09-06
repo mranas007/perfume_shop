@@ -57,22 +57,25 @@ def login_view(request): # Login View
 
 
 def register_view(request): # Registration View
-
+    logger.info("Register view called")
     if request.user.is_authenticated:
         return redirect('home')  # Redirect if user is already logged in
-    
+
     form = CustomUserCreationForm()
     if request.method == 'POST':
-
+        logger.info("POST request to register")
         form = CustomUserCreationForm(request.POST)
         if form.is_valid():
+            logger.info("Form is valid, saving user")
             user = form.save(commit=False)
             user.is_active = False
             user.save()
+            logger.info(f"User {user.email} saved, sending activation email")
             send_activation_email(request, user)
             messages.success(request, "Registration successful.")
             return redirect('accounts:email_confirmation')
         else:
+            logger.error(f"Form invalid: {form.errors}")
             messages.error(request, 'Something went wrong please try again later.')
 
     context = {'form':form}

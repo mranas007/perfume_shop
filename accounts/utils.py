@@ -6,10 +6,13 @@ def send_mail_to_client(subject, message, recipient_list, html_message=None):
     """
     Send email to client with optional HTML content
     """
+    # Use verified sender or Resend's default for testing
+    from_email = getattr(settings, 'DEFAULT_FROM_EMAIL', 'onboarding@resend.dev')
+
     email = EmailMultiAlternatives(
         subject=subject,
         body=message,  # Plain text version
-        from_email=settings.EMAIL_HOST_USER,
+        from_email=from_email,
         to=recipient_list,
     )
 
