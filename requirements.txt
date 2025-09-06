@@ -11,7 +11,9 @@ psycopg2-binary==2.9.10
 django-environ==0.11.2
 dj-database-url==2.1.0
 python-dotenv==1.0.0
-cloudinary==1.36.0
+
+# Cloudinary
+cloudinary==1.44.1
 django-cloudinary-storage==0.3.0
 
 # Development (optional)

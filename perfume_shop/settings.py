@@ -18,6 +18,7 @@ import cloudinary
 import cloudinary.uploader
 import cloudinary.api
 
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -25,8 +26,6 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 dotenv.load_dotenv()
 
 # Cloudinary configuration
-import logging
-logging.warning(f"Cloudinary CLOUD_NAME: {os.getenv('CLOUDINARY_CLOUD_NAME')}")
 if os.getenv('CLOUDINARY_CLOUD_NAME'):
     try:
         cloudinary.config(
@@ -34,25 +33,17 @@ if os.getenv('CLOUDINARY_CLOUD_NAME'):
             api_key=os.getenv('CLOUDINARY_API_KEY'),
             api_secret=os.getenv('CLOUDINARY_API_SECRET'),
         )
-        # Test Cloudinary connection
-        result = cloudinary.api.ping()
-        logging.warning(f"Cloudinary ping result: {result}")
-        logging.warning("Cloudinary configured and connected successfully")
     except Exception as e:
-        logging.error(f"Cloudinary configuration error: {e}")
-        logging.warning("Falling back to local storage")
-else:
-    logging.warning("Cloudinary not configured - using local storage")
-
+        print(f"Cloudinary config error: {e}")
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-vi2&^^w-aahtw&48xjw(yt(7n9(8bk4sip^7(hylyhhl27s)u@'
+SECRET_KEY = os.getenv('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['perfumeshop-production-a97b.up.railway.app', 'localhost', '127.0.0.1']
 CSRF_TRUSTED_ORIGINS = ['https://perfumeshop-production-a97b.up.railway.app']
@@ -120,7 +111,7 @@ AUTH_USER_MODEL = 'accounts.User'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
 DATABASES = {
-    'default': dj_database_url.config(default=os.getenv('DATABASE_URL', 'sqlite:///db.sqlite3')),
+    'default': dj_database_url.config(default=os.getenv('DATABASE_URL')),
 }
 
 
@@ -154,6 +145,22 @@ USE_I18N = True
 
 USE_TZ = True
 
+# Storage configuration
+STORAGES = {
+    "default": {
+        "BACKEND": "cloudinary_storage.storage.MediaCloudinaryStorage",
+    },
+    "staticfiles": {
+        "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
+    },
+}
+
+# Cloudinary config
+CLOUDINARY_STORAGE = {
+    "CLOUD_NAME": os.getenv("CLOUDINARY_CLOUD_NAME"),
+    "API_KEY": os.getenv("CLOUDINARY_API_KEY"),
+    "API_SECRET": os.getenv("CLOUDINARY_API_SECRET"),
+}
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
@@ -164,13 +171,8 @@ STATICFILES_DIRS = [BASE_DIR / 'static']
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 # Media files
-if os.getenv('CLOUDINARY_CLOUD_NAME'):
-    MEDIA_URL = '/media/'
-    DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
-    # Don't set MEDIA_ROOT when using Cloudinary
-else:
-    MEDIA_URL = '/media/'
-    MEDIA_ROOT = BASE_DIR / 'media'
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
