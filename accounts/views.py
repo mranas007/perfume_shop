@@ -1,4 +1,3 @@
-import logging
 from django.shortcuts import render, redirect
 from perfume_shop import settings
 from .models import User
@@ -15,9 +14,6 @@ from accounts.utils import send_mail_to_client
 from django.urls import reverse
 from django.utils.http import urlsafe_base64_decode
 from django.utils.encoding import force_str
-
-logger = logging.getLogger(__name__)
-
 
 
 
@@ -57,25 +53,20 @@ def login_view(request): # Login View
 
 
 def register_view(request): # Registration View
-    logger.info("Register view called")
     if request.user.is_authenticated:
         return redirect('home')  # Redirect if user is already logged in
 
     form = CustomUserCreationForm()
     if request.method == 'POST':
-        logger.info("POST request to register")
         form = CustomUserCreationForm(request.POST)
         if form.is_valid():
-            logger.info("Form is valid, saving user")
             user = form.save(commit=False)
-            user.is_active = False
+            user.is_active = True  # Temporarily activate user
             user.save()
-            logger.info(f"User {user.email} saved, sending activation email")
-            send_activation_email(request, user)
+            # send_activation_email(request, user)  # Commented out temporarily
             messages.success(request, "Registration successful.")
-            return redirect('accounts:email_confirmation')
+            return redirect('accounts:login')  # Redirect to login instead
         else:
-            logger.error(f"Form invalid: {form.errors}")
             messages.error(request, 'Something went wrong please try again later.')
 
     context = {'form':form}
@@ -123,17 +114,15 @@ def send_activation_email(request, user): # To send an account activation email
     </html>
     """
 
-    try:
-        send_mail_to_client(
-            subject="Activate your account",
-            message="Please check your email and click the activation link to activate your account.",  # Plain text fallback
-            recipient_list=[user.email],
-            html_message=html_message,
-        )
-        logger.info(f"Activation email sent to {user.email}")
-    except Exception as e:
-        logger.error(f"Failed to send activation email to {user.email}: {str(e)}")
-        raise  # Re-raise to let Django handle it
+    # try:
+    #     send_mail_to_client(
+    #         subject="Activate your account",
+    #         message="Please check your email and click the activation link to activate your account.",  # Plain text fallback
+    #         recipient_list=[user.email],
+    #         html_message=html_message,
+    #     )
+    # except Exception as e:
+    #     raise  # Re-raise to let Django handle it
 
 
 
@@ -167,9 +156,9 @@ def resend_activation_email(request): # To resend the activation email
             if check_user.is_active:
                 messages.success(request, "Your email is already activated.")
                 return redirect('accounts:login')
-            
-            send_activation_email(request, check_user)
-            messages.success(request, "Activation email resent.")
+
+            # send_activation_email(request, check_user)  # Commented out temporarily
+            messages.success(request, "Resend activation disabled temporarily.")
             return redirect('accounts:login')
         else:
             messages.error(request, "No user found with this email address.")
@@ -182,8 +171,8 @@ def forgot_password_view(request): # To render the forgot password page
         email = request.POST.get('email')
         if user := User.objects.filter(email=email).first():
             # Send password reset email
-            send_password_reset_email(request, user)
-            messages.success(request, "Password reset email sent.")
+            # send_password_reset_email(request, user)  # Commented out temporarily
+            messages.success(request, "Password reset functionality disabled temporarily.")
             return redirect('accounts:login')
         else:
             messages.error(request, "No user found with this email address.")
@@ -227,17 +216,15 @@ def send_password_reset_email(request, user): # To send a password reset email
     </body>
     </html>
     """
-    try:
-        send_mail_to_client(
-            subject="Reset your password",
-            message="Please check your email and click the password reset link to reset your password.",  # Plain text fallback
-            recipient_list=[user.email],
-            html_message=html_message,
-        )
-        logger.info(f"Password reset email sent to {user.email}")
-    except Exception as e:
-        logger.error(f"Failed to send password reset email to {user.email}: {str(e)}")
-        raise
+    # try:
+    #     send_mail_to_client(
+    #         subject="Reset your password",
+    #         message="Please check your email and click the password reset link to reset your password.",  # Plain text fallback
+    #         recipient_list=[user.email],
+    #         html_message=html_message,
+    #     )
+    # except Exception as e:
+    #     raise
 
 
 
