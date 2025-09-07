@@ -44,8 +44,8 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 DEBUG = os.getenv('DEBUG', 'False').lower() == 'true'
 
 ALLOWED_HOSTS = ['adnan-perfume.up.railway.app', 'localhost', '127.0.0.1']
-CSRF_TRUSTED_ORIGINS = ['https://adnan-perfume.up.railway.app/']
-SITE_DOMAIN = "https://adnan-perfume.up.railway.app/"
+CSRF_TRUSTED_ORIGINS = ['https://adnan-perfume.up.railway.app']
+SITE_DOMAIN = "https://adnan-perfume.up.railway.app"
 
 # Application definition
 
