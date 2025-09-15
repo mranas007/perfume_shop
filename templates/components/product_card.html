@@ -58,11 +58,32 @@
     <!-- Price & Quality Indicators -->
     <div class="mt-2 pt-2 border-t border-gray-100 grid grid-cols-2 gap-2 text-sm text-gray-500">
       {% if product.price %}
-      <div class="flex items-center space-x-1 min-w-0">
-        <span class="font-semibold text-amber-600 whitespace-nowrap">Rs.{{ product.price|floatformat:0 }}</span>
-      </div>
-      {% else %}
-      <div></div>
+        <div class="flex flex-col space-y-1 min-w-0">
+          {% if product.original_price and product.original_price > product.price %}
+            <!-- Show discount pricing -->
+            <div class="flex items-center space-x-2">
+              <span class="line-through text-gray-400 text-xs relative">
+                Rs.{{ product.original_price|floatformat:0 }}
+                <!-- Diagonal cut line -->
+                <span class="absolute inset-0 flex items-center justify-center">
+                  <span class="w-full h-0.5 bg-red-500 transform rotate-12"></span>
+                </span>
+              </span>
+              <span class="bg-red-100 text-red-600 text-xs font-bold px-2 py-0.5 rounded-full">
+                SALE
+              </span>
+            </div>
+            <div class="flex items-center space-x-1">
+              <span class="font-bold text-amber-600 text-lg whitespace-nowrap">Rs.{{ product.price|floatformat:0 }}</span>
+              <span class="text-xs text-green-600 font-medium">Sale Price</span>
+            </div>
+          {% else %}
+            <!-- Regular pricing -->
+            <div class="flex items-center space-x-1">
+              <span class="font-semibold text-amber-600 whitespace-nowrap">Rs.{{ product.price|floatformat:0 }}</span>
+            </div>
+          {% endif %}
+        </div>
       {% endif %}
       <div class="flex items-center space-x-1 min-w-0">
         <svg class="w-4 h-4 text-gray-600 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
@@ -132,6 +153,60 @@
         background: linear-gradient(135deg, #d97706, #b45309);
         box-shadow: 0 6px 20px rgba(245, 158, 11, 0.4);
     }
+
+    /* Login to Purchase Button - Elegant Amber Theme */
+    .login-to-purchase-btn {
+        background: linear-gradient(135deg, #f59e0b, #d97706, #b45309);
+        box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3);
+        position: relative;
+        overflow: hidden;
+        border: 1px solid rgba(245, 158, 11, 0.2);
+        backdrop-filter: blur(8px);
+    }
+
+    .login-to-purchase-btn::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+        transition: left 0.6s ease;
+    }
+
+    .login-to-purchase-btn:hover::before {
+        left: 100%;
+    }
+
+    .login-to-purchase-btn:hover {
+        background: linear-gradient(135deg, #d97706, #b45309, #92400e);
+        box-shadow: 0 6px 25px rgba(245, 158, 11, 0.5);
+        transform: translateY(-1px);
+        border-color: rgba(245, 158, 11, 0.4);
+    }
+
+    .login-to-purchase-btn:active {
+        transform: translateY(0) scale(0.98);
+        box-shadow: 0 2px 10px rgba(245, 158, 11, 0.4);
+    }
+
+    .login-to-purchase-btn:focus {
+        box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.3), 0 4px 15px rgba(245, 158, 11, 0.3);
+    }
+
+    /* Elegant glow effect for premium feel */
+    .login-to-purchase-btn {
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 640px) {
+        .login-to-purchase-btn {
+            font-size: 0.875rem;
+            padding: 0.625rem 1rem;
+        }
+    }
     </style>
     <!-- Actions -->
     <div class="mt-4 flex flex-col justify-between items-stretch gap-3">
@@ -169,6 +244,19 @@
               Out of Stock
           </button>
         {% endif %}
+
+      {% else %}
+          <div class="flex gap-2">
+            <a href="{% url 'accounts:login' %}?next={% url 'catalog:product_detail' product.slug %}"
+               class="flex-1 inline-flex items-center justify-center rounded-xl login-to-purchase-btn text-white font-semibold py-2.5 px-4 transition-all duration-200 hover:shadow-lg active:scale-95 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2"
+               aria-label="Login to purchase {{ product.name }}">
+                {% load static %}
+                <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+                    <path fill-rule="evenodd" d="M3 3a1 1 0 011 1v12a1 1 0 11-2 0V4a1 1 0 011-1zm7.707 3.293a1 1 0 010 1.414L9.414 9H17a1 1 0 110 2H9.414l1.293 1.293a1 1 0 01-1.414 1.414l-3-3a1 1 0 010-1.414l3-3a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                </svg>
+                Login to Purchase
+            </a>
+          </div>
       {% endif %}
 
       <a href="{% url 'catalog:product_detail' product.slug %}"

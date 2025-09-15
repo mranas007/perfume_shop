@@ -43,9 +43,9 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv('DEBUG', 'False').lower() == 'true'
 
-ALLOWED_HOSTS = ['adnan-perfume.up.railway.app', 'localhost', '127.0.0.1']
-CSRF_TRUSTED_ORIGINS = ['https://adnan-perfume.up.railway.app']
-SITE_DOMAIN = "https://adnan-perfume.up.railway.app"
+ALLOWED_HOSTS = ['adnanfragrance.com', 'localhost', '127.0.0.1']
+CSRF_TRUSTED_ORIGINS = ['http://www.adnanfragrance.com', 'https://www.adnanfragrance.com']
+SITE_DOMAIN = "http://www.adnanfragrance.com"
 
 # Application definition
 
@@ -67,7 +67,6 @@ INSTALLED_APPS = [
     'orders',
     'cart',
     'accounts',
-    'feedback',
 ]
 
 MIDDLEWARE = [
@@ -184,4 +183,5 @@ EMAIL_USE_TLS = True
 EMAIL_PORT = 587
 EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
+EMAIL_TIMEOUT = 10  # Timeout in seconds to prevent hanging
 DEFAULT_FROM_EMAIL = os.getenv('EMAIL_HOST_USER')

@@ -1,21 +1,28 @@
-from django.db.models import Q
 from django.shortcuts import redirect, render
-from catalog.models import Product, Category
+from catalog.models import Product, Review
 from .form import ContactUsForm
 from django.contrib import messages
 
 
 def home(request):
-  product_to_list = 4
   form = ContactUsForm()
+
   # Get up to 4 top listed products
+  product_to_list = 4
   products = list(Product.objects.filter(top_listed=True)[:product_to_list])
   # If less than 4, fill with other products (excluding already selected)
   if len(products) < product_to_list:
     needed = product_to_list - len(products)
     additional_products = Product.objects.exclude(id__in=[p.id for p in products])[:needed]
     products.extend(additional_products)
-  context = {"products": products, "form": form}
+
+  testimonials = Review.objects.filter(on_board=True).order_by('?')[:15]
+
+  context = {
+      "products": products,
+      "form": form,
+      "testimonials": testimonials
+   }
   return render(request, 'core/home.html', context)
 
 

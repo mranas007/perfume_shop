@@ -7,7 +7,7 @@
             <div class="flex items-center">
                 <a href="{% url 'home' %}" class="text-2xl font-bold hover:scale-105 transition-transform duration-300">
                     <span class="text-amber-500">Adnan</span>
-                    <span class="text-gray-800">Perfume</span>
+                    <span class="text-gray-800">Fragrance</span>
                 </a>
             </div>
 
@@ -27,13 +27,13 @@
                     </span>
                 </a>
 
-                <!-- Catalog -->
+                <!-- Catalogue -->
                 <a href="{% url 'catalog:index' %}"
                 class="relative px-4 py-2 font-medium group transition-all duration-300
                         text-gray-700 hover:text-amber-700 hover:font-semibold
                         {% if '/catalog' in request.path %}text-amber-700 font-semibold{% endif %}"
                 aria-current="{% if '/catalog' in request.path %}page{% endif %}">
-                    Catalog
+                    Catalogue 
                     <span class="absolute bottom-0 left-1/2 w-0 h-0.5 bg-amber-500 rounded-full
                                 transform -translate-x-1/2 group-hover:w-3/4
                                 transition-all duration-300 ease-out
@@ -217,7 +217,7 @@
                         <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
                         </svg>
-                        Catalog
+                        Catalogue 
                     </a>
 
                     <a href="{% url 'about' %}" class="flex items-center px-3 py-3 text-gray-700 hover:bg-amber-50 hover:text-amber-600 rounded-lg transition-all duration-300 {% if '/about' in request.path %}bg-amber-50 text-amber-600{% endif %}">

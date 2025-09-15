@@ -10,7 +10,6 @@ urlpatterns = [
     path('orders/', include('orders.urls')),
     path('cart/', include('cart.urls')),
     path('account/', include('accounts.urls')),
-    path('feedback/', include('feedback.urls')),
 ]
 # Serve media files in development and production (temporary solution)
 # For production, consider using cloud storage like Cloudinary or AWS S3n

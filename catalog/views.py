@@ -1,4 +1,6 @@
 from django.shortcuts import render
+
+from catalog.form import CreateUserReview
 from .models import Product, Category
 from django.core.paginator import Paginator
 from django.shortcuts import get_object_or_404
@@ -60,8 +62,25 @@ def catalog_page(request):
 
 def product_detail(request, slug: str):
     product = get_object_or_404(Product, slug=slug)
+    customer_feedback = product.reviews.filter(active=True).order_by('-created_at')[:5]
+    review_form = CreateUserReview()
     related_products = Product.objects.filter(category=product.category).exclude(id=product.id)[:8]
-    return render(request, 'catalog/product_detail.html', {
+    
+    if request.method == 'POST':
+        review_form = CreateUserReview(request.POST)
+        if review_form.is_valid():
+            review = review_form.save(commit=False)
+            review.product = product
+            review.save()
+            review_form = CreateUserReview()
+            
+            # Optionally, redirect to avoid re-submission on refresh
+            # return redirect('catalog:product_detail', slug=slug)
+    
+    context = {
         'product': product,
+        'customer_feedback': customer_feedback,
         'related_products': related_products,
-    })
+        'review_form': review_form,
+    }
+    return render(request, 'catalog/product_detail.html', context)

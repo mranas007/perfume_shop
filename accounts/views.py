@@ -61,16 +61,21 @@ def register_view(request): # Registration View
         form = CustomUserCreationForm(request.POST)
         if form.is_valid():
             user = form.save(commit=False)
-            user.is_active = True  # Temporarily activate user
+            user.is_active = False  # User needs to activate via email
             user.save()
-            # send_activation_email(request, user)  # Commented out temporarily
-            messages.success(request, "Registration successful.")
-            return redirect('accounts:login')  # Redirect to login instead
+            send_activation_email(request, user)
+            messages.success(request, "Registration successful. Please check your email to activate your account.")
+            return redirect('accounts:email_confirmation')
         else:
             messages.error(request, 'Something went wrong please try again later.')
 
     context = {'form':form}
     return render(request, 'accounts/register.html', context)
+
+
+
+def email_confirmation_alert(request): # To render an email confirmation alert page
+  return render(request, 'accounts/email_confirmation_alert.html')
 
 
 
@@ -114,15 +119,15 @@ def send_activation_email(request, user): # To send an account activation email
     </html>
     """
 
-    # try:
-    #     send_mail_to_client(
-    #         subject="Activate your account",
-    #         message="Please check your email and click the activation link to activate your account.",  # Plain text fallback
-    #         recipient_list=[user.email],
-    #         html_message=html_message,
-    #     )
-    # except Exception as e:
-    #     raise  # Re-raise to let Django handle it
+    try:
+        send_mail_to_client(
+            subject="Activate your account",
+            message="Please check your email and click the activation link to activate your account.",  # Plain text fallback
+            recipient_list=[user.email],
+            html_message=html_message,
+        )
+    except Exception as e:
+        raise  # Re-raise to let Django handle it
 
 
 
@@ -144,11 +149,6 @@ def activate_account(request, uidb64, token): # To activate a user account
 
 
 
-def email_confirmation_alert(request): # To render an email confirmation alert page
-  return render(request, 'accounts/email_confirmation_alert.html')
-
-
-
 def resend_activation_email(request): # To resend the activation email
     if request.method == 'POST':
         email = request.POST.get('email')
@@ -157,8 +157,8 @@ def resend_activation_email(request): # To resend the activation email
                 messages.success(request, "Your email is already activated.")
                 return redirect('accounts:login')
 
-            # send_activation_email(request, check_user)  # Commented out temporarily
-            messages.success(request, "Resend activation disabled temporarily.")
+            send_activation_email(request, check_user)
+            messages.success(request, "Activation email resent.")
             return redirect('accounts:login')
         else:
             messages.error(request, "No user found with this email address.")
@@ -171,8 +171,8 @@ def forgot_password_view(request): # To render the forgot password page
         email = request.POST.get('email')
         if user := User.objects.filter(email=email).first():
             # Send password reset email
-            # send_password_reset_email(request, user)  # Commented out temporarily
-            messages.success(request, "Password reset functionality disabled temporarily.")
+            send_password_reset_email(request, user)
+            messages.success(request, "Password reset email sent.")
             return redirect('accounts:login')
         else:
             messages.error(request, "No user found with this email address.")
@@ -216,15 +216,15 @@ def send_password_reset_email(request, user): # To send a password reset email
     </body>
     </html>
     """
-    # try:
-    #     send_mail_to_client(
-    #         subject="Reset your password",
-    #         message="Please check your email and click the password reset link to reset your password.",  # Plain text fallback
-    #         recipient_list=[user.email],
-    #         html_message=html_message,
-    #     )
-    # except Exception as e:
-    #     raise
+    try:
+        send_mail_to_client(
+            subject="Reset your password",
+            message="Please check your email and click the password reset link to reset your password.",  # Plain text fallback
+            recipient_list=[user.email],
+            html_message=html_message,
+        )
+    except Exception as e:
+        raise
 
 
 

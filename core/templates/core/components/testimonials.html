@@ -13,55 +13,101 @@
       </p>
     </div>
 
-    <!-- Testimonials Grid -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-      {% for testimonial in testimonials %}
-        <div class="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
+    <!-- Mobile-optimized horizontal scroll container -->
+    {% if testimonials %}
+    <div class="overflow-x-auto pb-6">
+      <div class="flex space-x-6 w-max">
+        {% for review in testimonials %}
+        <div class="bg-white p-6 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 w-80 flex-shrink-0 border border-gray-100">
           
-          <!-- Profile -->
-          <div class="flex items-center mb-4">
-            <img 
-              src="{% static testimonial.image %}" 
-              alt="{{ testimonial.name }}" 
-              class="w-14 h-14 rounded-full object-cover mr-4 border-2 border-amber-500"
-            />
-            <div>
-              <h3 class="font-semibold text-gray-800">{{ testimonial.name }}</h3>
-              <p class="text-gray-600 text-sm">{{ testimonial.role }}</p>
+          <!-- Profile Section -->
+          <div class="flex items-center mb-4 gap-1">
+           <div class="w-12 h-12 bg-amber-500 rounded-full flex items-center justify-center text-white font-bold text-lg">
+              {{ review.user_name|first|upper }}
+            </div>
+            <div class="flex-1">
+              <h3 class="font-semibold text-gray-800 text-lg">{{ review.user_name }}</h3>
             </div>
           </div>
           
-          <!-- Stars -->
-          <div class="flex mb-4">
-            {% for i in "12345" %}
-              {% if forloop.counter <= testimonial.rating %}
-                <!-- Filled Star -->
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-amber-500" viewBox="0 0 20 20" fill="currentColor">
-                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
-                </svg>
-              {% else %}
-                <!-- Empty Star -->
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-300" viewBox="0 0 20 20" fill="currentColor">
-                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
-                </svg>
-              {% endif %}
-            {% endfor %}
+          <!-- Product Info -->
+          <div class="mb-4 p-3 bg-gray-50 rounded-lg">
+            <p class="text-sm text-gray-600 mb-1">Reviewed Product:</p>
+            <p class="font-medium text-gray-800 truncate">{{ review.product.name }}</p>
+            {% if review.product.brand %}
+              <p class="text-xs text-gray-500">{{ review.product.brand }}</p>
+            {% endif %}
           </div>
           
-          <!-- Quote -->
-          <blockquote class="text-gray-700 italic mb-4">
-            “{{ testimonial.quote }}”
+          <!-- Stars Rating -->
+          <div class="flex items-center mb-4">
+            <div class="flex mr-2">
+              {% for i in "12345" %}
+                {% if forloop.counter <= review.rating %}
+                  <svg class="w-5 h-5 text-amber-400 fill-current" viewBox="0 0 20 20">
+                    <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/>
+                  </svg>
+                {% else %}
+                  <svg class="w-5 h-5 text-gray-300 fill-current" viewBox="0 0 20 20">
+                    <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/>
+                  </svg>
+                {% endif %}
+              {% endfor %}
+            </div>
+            <span class="text-sm font-medium text-gray-600">{{ review.rating }}/5</span>
+          </div>
+          
+          <!-- Review Comment -->
+          <blockquote class="text-gray-700 italic mb-4 leading-relaxed">
+            "{{ review.comment|truncatewords:25 }}"
           </blockquote>
+          
+          <!-- Review Footer -->
+          <div class="flex items-center justify-between pt-4 border-t border-gray-100">
+            <span class="text-xs text-gray-500">{{ review.created_at|date:"M d, Y" }}</span>
+            <div class="flex items-center space-x-1">
+              <svg class="w-4 h-4 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+              </svg>
+              <span class="text-xs text-green-600 font-medium">Verified</span>
+            </div>
+          </div>
         </div>
-      {% empty %}
-        <p class="col-span-full text-center text-gray-500">No testimonials available yet.</p>
-      {% endfor %}
+        {% endfor %}
+      </div>
     </div>
+    
+    <!-- Mobile scroll indicator -->
+    <div class="flex justify-center mt-6 md:hidden">
+      <div class="flex items-center space-x-2 text-xs text-gray-500">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16l-4-4m0 0l4-4m-4 4h18"></path>
+        </svg>
+        <span>Swipe to see more reviews</span>
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+        </svg>
+      </div>
+    </div>
+    
+    {% else %}
+    <!-- Empty State -->
+    <div class="text-center py-12">
+      <div class="w-16 h-16 mx-auto mb-4 bg-gray-100 rounded-full flex items-center justify-center">
+        <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
+        </svg>
+      </div>
+      <p class="text-gray-500">No customer reviews available yet.</p>
+      <p class="text-sm text-gray-400 mt-2">Be the first to share your experience!</p>
+    </div>
+    {% endif %}
 
-    <!-- Footer Line -->
+    <!-- Footer Section -->
     <div class="mt-12 text-center">
-      <div class="inline-flex items-center">
-        <span class="text-gray-700 mr-2">🌟 Trusted by over 10,000 customers from Balochistan</span>
+      <div class="inline-flex items-center bg-white px-6 py-3 rounded-full shadow-md">
+        <span class="text-amber-500 text-xl mr-2">🌟</span>
+        <span class="text-gray-700 font-medium">Trusted by customers across Balochistan</span>
       </div>
     </div>
   </div>
