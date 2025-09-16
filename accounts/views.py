@@ -10,7 +10,7 @@ from django.contrib.auth import update_session_auth_hash
 from django.utils.http import urlsafe_base64_encode
 from django.utils.encoding import force_bytes
 from django.contrib.auth.tokens import default_token_generator
-from accounts.utils import send_mail_to_client
+from accounts.tasks import send_mail_to_client
 from django.urls import reverse
 from django.utils.http import urlsafe_base64_decode
 from django.utils.encoding import force_str
@@ -78,7 +78,7 @@ def email_confirmation_alert(request): # To render an email confirmation alert p
   return render(request, 'accounts/email_confirmation_alert.html')
 
 
-
+# need to async
 def send_activation_email(request, user): # To send an account activation email
     uid = urlsafe_base64_encode(force_bytes(user.pk))
     token = default_token_generator.make_token(user)
@@ -120,7 +120,7 @@ def send_activation_email(request, user): # To send an account activation email
     """
 
     try:
-        send_mail_to_client(
+        send_mail_to_client.delay(
             subject="Activate your account",
             message="Please check your email and click the activation link to activate your account.",  # Plain text fallback
             recipient_list=[user.email],
@@ -128,6 +128,23 @@ def send_activation_email(request, user): # To send an account activation email
         )
     except Exception as e:
         raise  # Re-raise to let Django handle it
+
+
+
+def resend_activation_email(request): # To resend the activation email
+    if request.method == 'POST':
+        email = request.POST.get('email')
+        if check_user := User.objects.filter(email=email).first():
+            if check_user.is_active:
+                messages.success(request, "Your email is already activated.")
+                return redirect('accounts:login')
+
+            send_activation_email(request, check_user)
+            messages.success(request, "Activation email resent.")
+            return redirect('accounts:login')
+        else:
+            messages.error(request, "No user found with this email address.")
+    return render(request, 'accounts/resend_activation_email.html')
 
 
 
@@ -149,23 +166,6 @@ def activate_account(request, uidb64, token): # To activate a user account
 
 
 
-def resend_activation_email(request): # To resend the activation email
-    if request.method == 'POST':
-        email = request.POST.get('email')
-        if check_user := User.objects.filter(email=email).first():
-            if check_user.is_active:
-                messages.success(request, "Your email is already activated.")
-                return redirect('accounts:login')
-
-            send_activation_email(request, check_user)
-            messages.success(request, "Activation email resent.")
-            return redirect('accounts:login')
-        else:
-            messages.error(request, "No user found with this email address.")
-    return render(request, 'accounts/resend_activation_email.html')
-
-
-
 def forgot_password_view(request): # To render the forgot password page
     if request.method == 'POST':
         email = request.POST.get('email')
@@ -179,7 +179,7 @@ def forgot_password_view(request): # To render the forgot password page
     return render(request, 'accounts/forgot_password.html')
 
 
-
+# need to async
 def send_password_reset_email(request, user): # To send a password reset email
     uid = urlsafe_base64_encode(force_bytes(user.pk))
     token = default_token_generator.make_token(user)
@@ -217,14 +217,14 @@ def send_password_reset_email(request, user): # To send a password reset email
     </html>
     """
     try:
-        send_mail_to_client(
+        send_mail_to_client.delay(
             subject="Reset your password",
             message="Please check your email and click the password reset link to reset your password.",  # Plain text fallback
             recipient_list=[user.email],
             html_message=html_message,
         )
     except Exception as e:
-        raise
+        raise ValueError("Failed to send email") from e
 
 
 

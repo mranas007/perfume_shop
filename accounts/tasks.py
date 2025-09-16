@@ -1,13 +1,15 @@
+from celery import shared_task
 from django.core.mail import EmailMultiAlternatives
 from django.conf import settings
 
 
+@shared_task
 def send_mail_to_client(subject, message, recipient_list, html_message=None):
     """
     Send email to client with optional HTML content
     """
     # Use verified sender or Resend's default for testing
-    from_email = getattr(settings, 'DEFAULT_FROM_EMAIL', 'onboarding@resend.dev')
+    from_email = getattr(settings, 'DEFAULT_FROM_EMAIL')
 
     email = EmailMultiAlternatives(
         subject=subject,
