@@ -1,4 +1,4 @@
 providers = ["python"]
 
 [start]
-cmd = "python manage.py migrate && python manage.py collectstatic --noinput && gunicorn adnan-fragrance.wsgi:application"
+cmd = "python manage.py migrate && python manage.py collectstatic --noinput && gunicorn perfume_shop.wsgi:application"
