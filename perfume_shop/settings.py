@@ -46,7 +46,7 @@ DEBUG = os.getenv('DEBUG', 'False').lower() == 'true'
 # Update this with your domains
 ALLOWED_HOSTS = ['adnanfragrance.com', 'localhost', '127.0.0.1']
 CSRF_TRUSTED_ORIGINS = ['http://www.adnanfragrance.com', 'https://www.adnanfragrance.com']
-SITE_DOMAIN = "http://www.adnanfragrance.com"
+SITE_DOMAIN = "https://www.adnanfragrance.com"
 
 # Application definition
 INSTALLED_APPS = [
