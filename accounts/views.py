@@ -91,11 +91,11 @@ def send_activation_email(request, user): # To send an account activation email
     <html>
     <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
         <div style="max-width: 600px; margin: 0 auto; padding: 20px;">
-            <h2 style="color: #d97706;">Welcome to Adnan Perfume!</h2>
+            <h2 style="color: #d97706;">Welcome to Adnan Fragrance!</h2>
 
             <p>Dear <strong>{user.name}</strong>,</p>
 
-            <p>Thank you for registering with Adnan Perfume! We're excited to have you join our community of fragrance enthusiasts.</p>
+            <p>Thank you for registering with Adnan Fragrance! We're excited to have you join our community of fragrance enthusiasts.</p>
 
             <p>To complete your registration and activate your account, please click the button below:</p>
 
@@ -195,7 +195,7 @@ def send_password_reset_email(request, user): # To send a password reset email
 
             <p>Dear <strong>{user.name}</strong>,</p>
 
-            <p>We received a request to reset your password for your Adnan Perfume account. If you made this request, please click the button below to reset your password:</p>
+            <p>We received a request to reset your password for your Adnan Fragrance account. If you made this request, please click the button below to reset your password:</p>
 
             <div style="text-align: center; margin: 30px 0;">
                 <a href="{reset_link}" style="background-color: #d97706; color: white; padding: 12px 24px; text-decoration: none; border-radius: 5px; font-weight: bold; display: inline-block;">Reset Your Password</a>

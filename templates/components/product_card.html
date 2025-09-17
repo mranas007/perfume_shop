@@ -63,7 +63,7 @@
             <!-- Show discount pricing -->
             <div class="flex items-center space-x-2">
               <span class="line-through text-gray-400 text-xs relative">
-                Rs.{{ product.original_price|floatformat:0 }}
+                Rs. {{ product.original_price|floatformat:0 }}
                 <!-- Diagonal cut line -->
                 <span class="absolute inset-0 flex items-center justify-center">
                   <span class="w-full h-0.5 bg-red-500 transform rotate-12"></span>
@@ -74,13 +74,13 @@
               </span>
             </div>
             <div class="flex items-center space-x-1">
-              <span class="font-bold text-amber-600 text-lg whitespace-nowrap">Rs.{{ product.price|floatformat:0 }}</span>
+              <span class="font-bold text-amber-600 text-lg whitespace-nowrap">Rs. {{ product.price|floatformat:0 }}</span>
               <span class="text-xs text-green-600 font-medium">Sale Price</span>
             </div>
           {% else %}
             <!-- Regular pricing -->
             <div class="flex items-center space-x-1">
-              <span class="font-semibold text-amber-600 whitespace-nowrap">Rs.{{ product.price|floatformat:0 }}</span>
+              <span class="text-lg font-semibold text-amber-600 whitespace-nowrap">Rs. {{ product.price|floatformat:0 }}</span>
             </div>
           {% endif %}
         </div>
@@ -209,7 +209,7 @@
     }
     </style>
     <!-- Actions -->
-    <div class="mt-4 flex flex-col justify-between items-stretch gap-3">
+    <div class="flex flex-col justify-between items-stretch gap-3" style="margin-top: auto;">
       {% if user.is_authenticated and not user.is_staff and not user.is_superuser %}
         {% if product.id in cart_product_ids %}
           <!-- Product already in cart -->
@@ -220,7 +220,6 @@
                 <img src="{% static 'icons/cart.svg' %}" alt="Go to Cart" class="w-4 h-4 mr-2 filter-white">
                 Go to Cart
             </a>
-           
           </div>
         {% elif product.stock > 0 %}
           <!-- Product not in cart and in stock -->

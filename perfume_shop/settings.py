@@ -178,28 +178,13 @@ CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TIMEZONE = TIME_ZONE
 
 
-# Email Configuration
-# EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
-# EMAIL_HOST = 'smtp.gmail.com'
-# EMAIL_USE_TLS = True
-# EMAIL_PORT = 587
-# EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
-# EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
-# DEFAULT_FROM_EMAIL = os.getenv('EMAIL_HOST_USER')
-
-
-# Brevo (formerly Sendinblue) SMTP Configuration
+# Brevo email service (formerly Sendinblue) SMTP Configuration
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-
-# Brevo SMTP Settings from your dashboard
 EMAIL_HOST = 'smtp-relay.brevo.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-
-# Your Brevo SMTP credentials (Login is the username, Master Password is the password)
 EMAIL_HOST_USER = os.getenv('BREVO_SMTP_USER')
 EMAIL_HOST_PASSWORD = os.getenv('BREVO_SMTP_PASSWORD')
-
-# Your custom email and domain
 DEFAULT_FROM_EMAIL = 'noreply@adnanfragrance.com'
+DEFAULT_FROM_NAME = 'Adnan Fragrance'
 SERVER_EMAIL = DEFAULT_FROM_EMAIL
