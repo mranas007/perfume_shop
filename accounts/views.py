@@ -112,8 +112,8 @@ def send_activation_email(request, user): # To send an account activation email
             <p>For any questions or support, please contact us at <a href="mailto:adnanperfume84@gmail.com" style="color: #d97706;">adnanperfume84@gmail.com</a>.</p>
 
             <p>Best regards,<br>
-            <strong>Adnan Perfume Team</strong><br>
-            <a href="https://perfumeshop-production-a97b.up.railway.app/" style="color: #d97706;">https://perfumeshop-production-a97b.up.railway.app/</a></p>
+            <strong>Adnan Fragrance Team</strong><br>
+            <a href="https://adnanfragrance.com" style="color: #d97706;">https://adnanfragrance.com</a></p>
         </div>
     </body>
     </html>
@@ -127,7 +127,7 @@ def send_activation_email(request, user): # To send an account activation email
             html_message=html_message,
         )
     except Exception as e:
-        raise  # Re-raise to let Django handle it
+        raise  ValueError("Failed to send activation email") from e
 
 
 
@@ -210,8 +210,8 @@ def send_password_reset_email(request, user): # To send a password reset email
             <p>For any questions or support, please contact us at <a href="mailto:adnanperfume84@gmail.com" style="color: #d97706;">adnanperfume84@gmail.com</a>.</p>
 
             <p>Best regards,<br>
-            <strong>Adnan Perfume Team</strong><br>
-            <a href="https://perfumeshop-production-a97b.up.railway.app/" style="color: #d97706;">https://perfumeshop-production-a97b.up.railway.app/</a></p>
+            <strong>Adnan Fragrance Team</strong><br>
+            <a href="https://adnanfragrance.com" style="color: #d97706;">https://adnanfragrance.com</a></p>
         </div>
     </body>
     </html>
