@@ -15,7 +15,6 @@ import os
 import dj_database_url
 import dotenv
 import cloudinary
-print("Starting Django settings...") 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -178,5 +177,3 @@ EMAIL_HOST_PASSWORD = os.getenv('BREVO_SMTP_PASSWORD')
 DEFAULT_FROM_EMAIL = 'noreply@adnanfragrance.com'
 DEFAULT_FROM_NAME = 'Adnan Fragrance'
 SERVER_EMAIL = DEFAULT_FROM_EMAIL
-
-print("Django settings loaded successfully!")
