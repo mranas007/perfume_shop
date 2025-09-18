@@ -1,25 +1,30 @@
 providers = ["python"]
 
 [phases.setup]
-nixPkgs = ["postgresql", "gcc"]
+nixPkgs = [
+  "python311",  # Specify Python version explicitly
+  "postgresql",
+  "gcc"
+]
 
 [phases.install]
 cmds = [
-  "python -m pip install --upgrade pip",
-  "pip install gunicorn"  # Explicitly install gunicorn
+  "python3 -m pip install --upgrade pip",
+  "pip install gunicorn"
 ]
 
 [phases.build]
 cmds = [
   "pip install -r requirements.txt",
-  "python manage.py collectstatic --no-input"
+  "python3 manage.py collectstatic --no-input"
 ]
 
 [start]
-cmd = "/usr/local/bin/gunicorn perfume_shop.wsgi:application --bind 0.0.0.0:${PORT} --workers 4"
-startupCommand = ["python manage.py migrate"]
+cmd = "gunicorn perfume_shop.wsgi:application"
+startupCommand = "python3 manage.py migrate"
 
 [start.env]
 PORT = "8000"
 PYTHONUNBUFFERED = "1"
-DJANGO_SETTINGS_MODULE = "perfume_shop.settings"  # Add settings module
+DJANGO_SETTINGS_MODULE = "perfume_shop.settings"
+PATH = "/usr/local/bin:/usr/bin:/bin"
