@@ -174,6 +174,5 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = os.getenv('BREVO_SMTP_USER')
 EMAIL_HOST_PASSWORD = os.getenv('BREVO_SMTP_PASSWORD')
-DEFAULT_FROM_EMAIL = 'noreply@adnanfragrance.com'
-DEFAULT_FROM_NAME = 'Adnan Fragrance'
+DEFAULT_FROM_EMAIL = 'Adnan Fragrance <noreply@adnanfragrance.com>'
 SERVER_EMAIL = DEFAULT_FROM_EMAIL
