@@ -8,4 +8,4 @@ nixPkgs = [
 ]
 
 [start]
-cmd = "python manage.py migrate && gunicorn perfume_shop.wsgi:application --bind 0.0.0.0:8000 --workers 2 --threads 2 --worker-class=gthread"
+cmd = "python manage.py migrate --no-input && gunicorn perfume_shop.wsgi:application --bind 0.0.0.0:8000 --workers 2 --threads 2 --worker-class=gthread"
