@@ -1,16 +1,21 @@
+providers = ["python"]
+
 [phases.setup]
-nixpkgs = ["python3"]
+nixPkgs = ["postgresql", "gcc"]
 
 [phases.install]
-cmd = "pip install -r requirements.txt"
+cmds = ["python -m pip install --upgrade pip"]
 
 [phases.build]
-cmd = """
-python3 manage.py makemigrations
-python3 manage.py migrate
-python3 manage.py createsuperuser --noinput --username admin --email adnanperfume84@gmail.com
-python3 manage.py changepassword admin --password 'Admin@123'
-"""
+cmds = [
+  "pip install -r requirements.txt",
+  "python manage.py collectstatic --no-input"
+]
 
 [start]
-cmd = "gunicorn --bind 0.0.0.0:$PORT perfume_shop.wsgi:application"
+cmd = "gunicorn perfume_shop.wsgi:application"
+startupCommand = ["python manage.py migrate"]
+
+[start.env]
+PORT = "8000"
+PYTHONUNBUFFERED = "1"
