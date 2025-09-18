@@ -1,4 +1,19 @@
-providers = ["python"]
+# You can add the following to your nixpacks.toml file
+# to run migrations and create a superuser before starting the server.
+
+[phases.setup]
+nixpkgs = ["python3"]
+
+[phases.install]
+cmd = "pip install -r requirements.txt"
+
+[phases.build]
+cmd = """
+python3 manage.py makemigrations
+python3 manage.py migrate
+python3 manage.py createsuperuser --noinput --username admin --email adnanperfume84@gmail.com
+python3 manage.py changepassword admin --password 'Admin@123'
+"""
 
 [start]
 cmd = "gunicorn perfume_shop.wsgi:application"
