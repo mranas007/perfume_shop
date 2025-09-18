@@ -1,3 +1,9 @@
+import logging
+logger = logging.getLogger(__name__)
+
+logger.error("!!! Intentionally crashing the application for a test !!!")
+raise ValueError("Forced crash to check logging")
+
 from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
