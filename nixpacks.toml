@@ -1,10 +1,4 @@
 providers = ["python"]
 
 [start]
-cmd = "gunicorn perfume_shop.wsgi:application"
-
-[phases.build]
-cmds = [
-  "python manage.py migrate",
-  "python manage.py collectstatic --noinput",
-]
+cmd = "python manage.py migrate && python manage.py collectstatic --noinput && gunicorn perfume_shop.wsgi:application"
