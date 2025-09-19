@@ -9,10 +9,14 @@ nixPkgs = [
 
 [phases.install]
 cmds = [
-  "pip install --upgrade pip",
-  "pip install -r requirements.txt"
+  "python3 -m pip install --upgrade pip",
+  "python3 -m pip install -r requirements.txt"
 ]
 
+[phases.build]
+cmds = [
+  "python3 manage.py collectstatic --noinput"
+]
 
 [start]
-cmd = "python manage.py migrate --noinput && honcho start"
+cmd = "python3 manage.py migrate --noinput && honcho start"
