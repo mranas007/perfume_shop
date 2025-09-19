@@ -7,12 +7,7 @@ nixPkgs = [
   "gcc"
 ]
 
-[phases.release]
-# Runs only once per deployment
-cmd = """
-  python manage.py migrate --noinput &&
-  python manage.py shell < manage_superuser.py
-"""
+
 
 [start]
 cmd = "honcho start"
