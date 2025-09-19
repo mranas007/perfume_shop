@@ -7,6 +7,9 @@ nixPkgs = [
   "gcc"
 ]
 
+[phases.release]
+cmd = "python manage.py collectstatic --noinput && python manage.py migrate && python manage.py shell < manage_superuser.py"
+
 
 [start]
 cmd = "honcho start"
