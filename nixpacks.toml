@@ -15,12 +15,12 @@ cmds = [
 
 [phases.build]
 cmds = [
-  "python manage.py collectstatic --noinput"
+  "python manage.py collectstatic --no-input"
 ]
 
 [phases.release]
 cmds = [
-  "python manage.py migrate --noinput"
+  "python manage.py migrate --no-input"
 ]
 
 [start]
