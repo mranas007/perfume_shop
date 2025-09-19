@@ -2,21 +2,21 @@ providers = ["python"]
 
 [phases.setup]
 nixPkgs = [
-  "python311",
+  "python311Full",
   "postgresql",
   "gcc"
 ]
 
 [phases.install]
 cmds = [
-  "python3 -m pip install --upgrade pip",
-  "python3 -m pip install -r requirements.txt"
+  "pip install --upgrade pip",
+  "pip install -r requirements.txt"
 ]
 
 [phases.build]
 cmds = [
-  "python3 manage.py collectstatic --noinput"
+  "python manage.py collectstatic --noinput"
 ]
 
 [start]
-cmd = "python3 manage.py migrate --noinput && honcho start"
+cmd = "python manage.py migrate --noinput && honcho start"
