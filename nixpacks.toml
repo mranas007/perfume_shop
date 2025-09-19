@@ -13,15 +13,6 @@ cmds = [
   "pip install -r requirements.txt"
 ]
 
-[phases.build]
-cmds = [
-  "python manage.py collectstatic --no-input"
-]
-
-[phases.release]
-cmds = [
-  "python manage.py migrate --no-input"
-]
 
 [start]
-cmd = "honcho start"
+cmd = "python manage.py migrate --noinput && honcho start"
