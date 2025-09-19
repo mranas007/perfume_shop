@@ -9,9 +9,10 @@ nixPkgs = [
 
 [phases.build]
 cmds = [
-  "adduser -D appuser",
+  "useradd -m appuser",
   "chown -R appuser /app"
 ]
+
 
 [start]
 cmd = "su appuser -c 'honcho start'"
