@@ -51,11 +51,12 @@ class OrderItemInline(admin.TabularInline):
 
 @admin.register(Order)
 class OrderAdmin(admin.ModelAdmin):
-    list_display = ('id', 'user', 'customer_name', 'customer_phone', 'status_badge', 'created_at', 'total_amount', 'item_count', 'order_products')
+    list_display = ('id', 'user', 'customer_name', 'customer_phone', 'status', 'created_at', 'total_amount', 'item_count', 'order_products')
     list_filter = ('status', 'created_at', 'user')
     search_fields = ('id', 'customer_name', 'customer_phone', 'user__name', 'user__email', 'customer_address')
     readonly_fields = ('id', 'created_at', 'user', 'customer_name', 'customer_phone', 'customer_address', 'cart_details', 'order_items_display')
     ordering = ('-created_at',)
+    list_editable = ('status',)
     list_per_page = 25
 
     fieldsets = (
