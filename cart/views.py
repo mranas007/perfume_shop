@@ -6,6 +6,10 @@ from django.urls import reverse
 from catalog.models import Product
 from orders.models import Order
 from .models import CartItem
+from .tasks import send_mail_to_owner, send_mail_to_client
+from django.template.loader import render_to_string
+
+
 
 @login_required
 def cart_details(request):
@@ -20,6 +24,8 @@ def cart_details(request):
         'item_count': item_count,
     }
     return render(request, 'cart/cart_detail.html', context)
+
+
 
 @login_required
 def cart_add(request, product_id):
@@ -44,6 +50,8 @@ def cart_add(request, product_id):
     # Redirect back to previous page or product detail
     next_url = request.GET.get('next', 'cart:cart_detail')
     return redirect(next_url)
+
+
 
 @login_required
 def cart_update(request, item_id):
@@ -96,6 +104,8 @@ def cart_update(request, item_id):
 
     return redirect('cart:cart_detail')
 
+
+
 @login_required
 def cart_remove(request, item_id):
     """Remove item from cart"""
@@ -106,12 +116,16 @@ def cart_remove(request, item_id):
     messages.success(request, f"{product_name} removed from cart.")
     return redirect('cart:cart_detail')
 
+
+
 @login_required
 def cart_clear(request):
     """Clear all items from cart"""
     CartItem.objects.filter(user=request.user).delete()
     messages.success(request, "Cart cleared successfully.")
     return redirect('cart:cart_detail')
+
+
 
 @login_required
 def checkout(request):
@@ -139,9 +153,13 @@ def checkout(request):
     }
     return render(request, 'cart/checkout.html', context)
 
+
+
 @login_required
 def place_order(request):
-    """Process order placement"""
+    """
+        Process order placement
+    """
     if request.method != 'POST':
         return redirect('cart:checkout')
 
@@ -163,11 +181,17 @@ def place_order(request):
 
     # Create cart details dictionary
     cart_details = {}
+    order_items = []
     total_amount = 0
 
     for item in cart_items:
         cart_details[str(item.product.id)] = item.quantity
         total_amount += item.total_price
+        order_items.append({
+            "name": item.product.name,
+            "quantity": item.quantity,
+            "price": item.price,
+        })
 
     # Create the order
     order = Order.objects.create(
@@ -179,9 +203,13 @@ def place_order(request):
         status='pending'
     )
 
+    try:
+        send_mail_to_owner.delay(order.id, order_items, total_amount)
+        send_mail_to_client.delay(order.id, order_items, total_amount, request.user.email)
+    except Exception as e:
+        print("Failed to queue email tasks:", str(e))
+
     # Clear the cart
     cart_items.delete()
-
     messages.success(request, f"Order #{order.id} placed successfully! We will contact you soon for payment and delivery.")
-
     return redirect('orders:order_confirmation', order_id=order.id)

@@ -1,61 +1,76 @@
 from django.shortcuts import render
-
 from catalog.form import CreateUserReview
 from .models import Product, Category
 from django.core.paginator import Paginator
 from django.shortcuts import get_object_or_404
 from django.db.models import Q
+from django.core.cache import cache
 
 
+from django.core.paginator import Paginator
+from django.core.cache import cache
+from django.db.models import Q
+from .models import Product, Category
 
 def catalog_page(request):
     category_slug = request.GET.get('category_slug', '')
     sort_by = request.GET.get('sort', 'featured')
     search_query = request.GET.get('q')
+    page_number = request.GET.get('page', 1)
 
-    # Base queryset
-    products = Product.objects.all()
+    # Cache key includes category, sort, search, and page
+    cache_key = f"catalog_{category_slug}_{sort_by}_{search_query}_page_{page_number}"
+    page_obj = cache.get(cache_key)
 
-    # Apply category filter
-    if category_slug:
-        products = products.filter(category__slug=category_slug)
-        current_category = Category.objects.filter(slug=category_slug).first()
-    else:
-        current_category = None
+    if page_obj is None:
+        # Base queryset
+        products = Product.objects.all()
 
-    # Apply search filter
-    if search_query:
-        products = products.filter(
-            Q(name__icontains=search_query) |
-            Q(description__icontains=search_query) |
-            Q(brand__icontains=search_query)
-        )
+        # Apply category filter
+        if category_slug:
+            products = products.filter(category__slug=category_slug)
+            current_category = Category.objects.filter(slug=category_slug).first()
+        else:
+            current_category = None
 
-    # Apply sorting
-    if sort_by == 'price_low':
-        products = products.order_by('price')
-    elif sort_by == 'price_high':
-        products = products.order_by('-price')
-    elif sort_by == 'newest':
-        products = products.order_by('-created_at')
-    elif sort_by == 'popular':
-        products = products.order_by('-top_listed', '-created_at')  # Assuming top_listed indicates popularity
-    else:  # featured/default
-        products = products.order_by('-top_listed', '-created_at')
+        # Apply search filter
+        if search_query:
+            products = products.filter(
+                Q(name__icontains=search_query) |
+                Q(description__icontains=search_query) |
+                Q(brand__icontains=search_query)
+            )
 
-    categories = Category.objects.all()[:10]  # Fetching first 10 categories for display
+        # Apply sorting
+        match sort_by:
+            case 'price_low':
+                products = products.order_by('price')
+            case 'price_high':
+                products = products.order_by('-price')
+            case 'newest':
+                products = products.order_by('-created_at')
+            case 'popular':
+                products = products.order_by('-top_listed', '-created_at')
+            case _:  # featured/default
+                products = products.order_by('-top_listed', '-created_at')
 
-    # Pagination
-    paginator = Paginator(products, 20)  # 20 products per page
-    page_number = request.GET.get('page')
-    page_obj = paginator.get_page(page_number)
+        # Pagination
+        paginator = Paginator(products, 20)  # 20 products per page
+        page_obj = paginator.get_page(page_number)
+        # Cache only this page result
+        cache.set(cache_key, page_obj, 300)  # 5 minutes
+
+    # Cache categories list separately
+    categories = cache.get('categories_list')
+    if categories is None:
+        categories = Category.objects.all()[:10]  # Sidebar categories
+        cache.set('categories_list', categories, 3600)  # Cache for 1 hour
 
     context = {
-        'products': products,  # Full queryset for sidebar counts
-        'categories': categories,
         'page_obj': page_obj,
-        'current_category': current_category,
-        'sort_by': sort_by
+        'categories': categories,
+        'current_category': category_slug,
+        'sort_by': sort_by,
     }
     return render(request, 'catalog/index.html', context)
 

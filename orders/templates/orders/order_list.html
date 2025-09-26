@@ -90,38 +90,7 @@
                                 </div>
                                 {% endfor %}
                 
-                                <!-- Pagination -->
-                                {% if page_obj.has_other_pages %}
-                                <div class="mt-8 flex justify-center">
-                                    <nav class="flex items-center space-x-2">
-                                        {% if page_obj.has_previous %}
-                                            <a href="?page={{ page_obj.previous_page_number }}" class="px-3 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 hover:text-gray-700 transition-colors">
-                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
-                                                </svg>
-                                                Previous
-                                            </a>
-                                        {% endif %}
-                
-                                        {% for num in page_obj.paginator.page_range %}
-                                            {% if page_obj.number == num %}
-                                                <span class="px-3 py-2 text-sm font-medium text-white bg-amber-500 border border-amber-500 rounded-lg">{{ num }}</span>
-                                            {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
-                                                <a href="?page={{ num }}" class="px-3 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 hover:text-gray-700 transition-colors">{{ num }}</a>
-                                            {% endif %}
-                                        {% endfor %}
-                
-                                        {% if page_obj.has_next %}
-                                            <a href="?page={{ page_obj.next_page_number }}" class="px-3 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 hover:text-gray-700 transition-colors">
-                                                Next
-                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
-                                                </svg>
-                                            </a>
-                                        {% endif %}
-                                    </nav>
-                                </div>
-                                {% endif %}
+                                
                             </div>
                         {% else %}
                             <p class="text-gray-500 text-center py-8">No items found for this order</p>
@@ -147,6 +116,36 @@
                 </div>
                 {% endfor %}
             </div>
+            <!-- Pagination -->
+            {% if page_obj.has_other_pages %}
+            <div class="mt-8 flex justify-center">
+                <nav class="flex items-center space-x-2">
+                    {% if page_obj.has_previous %}
+                        <a href="?page={{ page_obj.previous_page_number }}" class="px-3 py-2 flex gap-1 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 hover:text-gray-700 transition-colors">
+                            <svg class="w-4 h-4 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                            </svg>
+                            Previous
+                        </a>
+                       {% endif %}
+                       {% for num in page_obj.paginator.page_range %}
+                           {% if page_obj.number == num %}
+                               <span class="px-3 py-2 text-sm font-medium text-white bg-amber-500 border border-amber-500 rounded-lg">{{ num }}</span>
+                           {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                               <a href="?page={{ num }}" class="px-3 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 hover:text-gray-700 transition-colors">{{ num }}</a>
+                           {% endif %}
+                       {% endfor %}
+                       {% if page_obj.has_next %}
+                           <a href="?page={{ page_obj.next_page_number }}" class="px-3 py-2 flex gap-1 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 hover:text-gray-700 transition-colors">
+                               Next
+                               <svg class="w-4 h-4 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                               </svg>
+                           </a>
+                       {% endif %}
+                   </nav>
+               </div>
+               {% endif %}
         {% else %}
             <!-- Empty State -->
             <div class="text-center py-16 mt-8">
