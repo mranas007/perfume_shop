@@ -19,9 +19,16 @@ SITE_DOMAIN = "https://www.adnanfragrance.com"
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
-# Database
+# Database - Fail loudly if DATABASE_URL is missing in production
+DATABASE_URL = os.getenv("DATABASE_URL")
+if not DATABASE_URL:
+    raise ValueError(
+        "DATABASE_URL environment variable is required in production. "
+        "Please set it to your PostgreSQL connection string."
+    )
+
 DATABASES = {
-    "default": dj_database_url.config(default=os.getenv("DATABASE_URL")),
+    "default": dj_database_url.config(default=DATABASE_URL),
 }
 
 # Keep database connections open for reuse
