@@ -44,6 +44,36 @@ SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 SECURE_SSL_REDIRECT = True
 SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SAMESITE = "Lax"
+CSRF_COOKIE_SAMESITE = "Lax"
+SECURE_CONTENT_TYPE_NOSNIFF = True
+SECURE_BROWSER_XSS_FILTER = True
+X_FRAME_OPTIONS = "DENY"
+REFERRER_POLICY = "strict-origin-when-cross-origin"
 SECURE_HSTS_SECONDS = int(os.getenv("SECURE_HSTS_SECONDS", "31536000"))
 SECURE_HSTS_INCLUDE_SUBDOMAINS = True
 SECURE_HSTS_PRELOAD = True
+
+
+# Respect X-Forwarded-Host/Proto headers when behind a proxy
+USE_X_FORWARDED_HOST = True
+
+
+# Basic structured logging to stdout/stderr (12-factor)
+# LOGGING = {
+#     "version": 1,
+#     "disable_existing_loggers": False,
+#     "formatters": {
+#         "json": {
+#             "format": "{\"level\":\"%(levelname)s\",\"time\":\"%(asctime)s\",\"name\":\"%(name)s\",\"message\":\"%(message)s\"}",
+#         },
+#         "simple": {"format": "[%(asctime)s] %(levelname)s %(name)s: %(message)s"},
+#     },
+#     "handlers": {
+#         "console": {
+#             "class": "logging.StreamHandler",
+#             "formatter": "simple",
+#         },
+#     },
+#     "root": {"handlers": ["console"], "level": os.getenv("LOG_LEVEL", "INFO")},
+# }
