@@ -1,5 +1,7 @@
 import os
+import dotenv
 
+dotenv.load_dotenv()
 
 # Allow using DJANGO_SETTINGS_MODULE=perfume_shop.settings
 # Select settings module based on DJANGO_ENV env var
