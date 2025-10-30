@@ -31,8 +31,8 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 DEBUG = os.getenv('DEBUG', 'False').lower() == 'true'
 
 # Update this with your domains
-ALLOWED_HOSTS = ['adnanfragrance.com', 'www.adnanfragrance.com', 'localhost', '127.0.0.1']
-CSRF_TRUSTED_ORIGINS = ['https://adnanfragrance.com', 'https://www.adnanfragrance.com']
+ALLOWED_HOSTS = ['adnanfragrance.com', 'www.adnanfragrance.com', 'localhost', '127.0.0.1', '10.204.64.7']
+CSRF_TRUSTED_ORIGINS = ['https://adnanfragrance.com', 'https://www.adnanfragrance.com', 'http://10.204.64.7:8000']
 SITE_DOMAIN = "https://www.adnanfragrance.com"
 
 # Application definition
@@ -92,9 +92,16 @@ WSGI_APPLICATION = 'perfume_shop.wsgi.application'
 AUTH_USER_MODEL = 'accounts.User'
 
 
-# Database
+# DATABASES
 DATABASES = {
-    'default': dj_database_url.config(default=os.getenv('DATABASE_URL')),
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.getenv('DATABASE_NAME'),
+        'USER': os.getenv('DATABASE_USER'),
+        'PASSWORD': os.getenv('DATABASE_PASSWORD'),
+        'HOST': os.getenv('DATABASE_HOST'),
+        'PORT': os.getenv('DATABASE_PORT'),
+    }
 }
 
 

@@ -15,61 +15,60 @@
             <div class="hidden md:flex items-center space-x-6">
                 <!-- Home -->
                 <a href="{% url 'home' %}"
-                class="relative px-4 py-2 font-medium group transition-all duration-300
-                        text-gray-700 hover:text-amber-700 hover:font-semibold
-                        {% if request.path == '/' %}text-amber-700 font-semibold{% endif %}"
-                aria-current="{% if request.path == '/' %}page{% endif %}">
+                   class="relative px-4 py-2 font-medium group transition-all duration-300
+                          text-gray-700 hover:text-amber-700 hover:font-semibold
+                          {% if request.path == '/' %}text-amber-700 font-semibold{% endif %}"
+                   aria-current="{% if request.path == '/' %}page{% endif %}">
                     Home
                     <span class="absolute bottom-0 left-1/2 w-0 h-0.5 bg-amber-500 rounded-full
-                                transform -translate-x-1/2 group-hover:w-3/4
-                                transition-all duration-300 ease-out
-                                {% if request.path == '/' %}w-3/4{% endif %}">
+                                 transform -translate-x-1/2 group-hover:w-3/4
+                                 transition-all duration-300 ease-out
+                                 {% if request.path == '/' %}w-3/4{% endif %}">
                     </span>
                 </a>
 
                 <!-- Catalogue -->
                 <a href="{% url 'catalog:index' %}"
-                class="relative px-4 py-2 font-medium group transition-all duration-300
-                        text-gray-700 hover:text-amber-700 hover:font-semibold
-                        {% if '/catalog' in request.path %}text-amber-700 font-semibold{% endif %}"
-                aria-current="{% if '/catalog' in request.path %}page{% endif %}">
+                   class="relative px-4 py-2 font-medium group transition-all duration-300
+                          text-gray-700 hover:text-amber-700 hover:font-semibold
+                          {% if '/catalog' in request.path %}text-amber-700 font-semibold{% endif %}"
+                   aria-current="{% if '/catalog' in request.path %}page{% endif %}">
                     Catalogue 
                     <span class="absolute bottom-0 left-1/2 w-0 h-0.5 bg-amber-500 rounded-full
-                                transform -translate-x-1/2 group-hover:w-3/4
-                                transition-all duration-300 ease-out
-                                {% if '/catalog' in request.path %}w-3/4{% endif %}">
+                                 transform -translate-x-1/2 group-hover:w-3/4
+                                 transition-all duration-300 ease-out
+                                 {% if '/catalog' in request.path %}w-3/4{% endif %}">
                     </span>
                 </a>
 
                 <!-- About -->
                 <a href="{% url 'about' %}"
-                class="relative px-4 py-2 font-medium group transition-all duration-300
-                        text-gray-700 hover:text-amber-700 hover:font-semibold
-                        {% if '/about' in request.path %}text-amber-700 font-semibold{% endif %}"
-                aria-current="{% if '/about' in request.path %}page{% endif %}">
+                   class="relative px-4 py-2 font-medium group transition-all duration-300
+                          text-gray-700 hover:text-amber-700 hover:font-semibold
+                          {% if '/about' in request.path %}text-amber-700 font-semibold{% endif %}"
+                   aria-current="{% if '/about' in request.path %}page{% endif %}">
                     About
                     <span class="absolute bottom-0 left-1/2 w-0 h-0.5 bg-amber-500 rounded-full
-                                transform -translate-x-1/2 group-hover:w-3/4
-                                transition-all duration-300 ease-out
-                                {% if '/about' in request.path %}w-3/4{% endif %}">
+                                 transform -translate-x-1/2 group-hover:w-3/4
+                                 transition-all duration-300 ease-out
+                                 {% if '/about' in request.path %}w-3/4{% endif %}">
                     </span>
                 </a>
 
                 <!-- Contact -->
                 <a href="{% url 'contact_us' %}"
-                class="relative px-4 py-2 font-medium group transition-all duration-300
-                        text-gray-700 hover:text-amber-700 hover:font-semibold
-                        {% if '/contact' in request.path %}text-amber-700 font-semibold{% endif %}"
-                aria-current="{% if '/contact' in request.path %}page{% endif %}">
+                   class="relative px-4 py-2 font-medium group transition-all duration-300
+                          text-gray-700 hover:text-amber-700 hover:font-semibold
+                          {% if '/contact' in request.path %}text-amber-700 font-semibold{% endif %}"
+                   aria-current="{% if '/contact' in request.path %}page{% endif %}">
                     Contact
                     <span class="absolute bottom-0 left-1/2 w-0 h-0.5 bg-amber-500 rounded-full
-                                transform -translate-x-1/2 group-hover:w-3/4
-                                transition-all duration-300 ease-out
-                                {% if '/contact' in request.path %}w-3/4{% endif %}">
+                                 transform -translate-x-1/2 group-hover:w-3/4
+                                 transition-all duration-300 ease-out
+                                 {% if '/contact' in request.path %}w-3/4{% endif %}">
                     </span>
                 </a>
             </div>
-
 
             <!-- Right Side Actions -->
             <div class="flex items-center space-x-3">
@@ -81,10 +80,10 @@
                     </svg>
                 </button>
 
-                <!-- Cart Icon (Visible on all screens for authenticated non-staff users) -->
+                <!-- Cart Icon -->
                 {% if user.is_authenticated and not user.is_staff %}
                 <a href="{% url 'cart:cart_detail' %}" class="relative p-2 text-gray-600 hover:text-amber-600 hover:bg-amber-200 rounded-full transition-all duration-300">
-                    <img src="{% static "icons/cart.svg" %}" alt="cart svg" class="w-5 h-5 hover:pointer-cursor" />
+                    <img src="{% static 'icons/cart.svg' %}" alt="cart" class="w-5 h-5" />
                     {% if cart_count > 0 %}
                     <span class="absolute -top-1 -right-1 bg-amber-500 text-white text-xs font-bold rounded-full min-w-[18px] h-[18px] flex items-center justify-center px-1">
                         {{ cart_count }}
@@ -178,16 +177,13 @@
     </div>
 
     <!-- Mobile Menu Overlay -->
-    <div id="mobileMenuOverlay" class="fixed  top-[64px]  inset-0 bg-black/50 z-40 md:hidden opacity-0 invisible transition-all duration-300"></div>
+    <div id="mobileMenuOverlay" class="fixed top-[64px] inset-0 bg-black/50 z-40 md:hidden opacity-0 invisible transition-all duration-300"></div>
 
     <!-- Mobile Menu Panel -->
-    <div id="mobileMenu" class="fixed top-[64px] right-0 w-80 max-w-[90vw] bg-white shadow-2xl z-50 md:hidden transform translate-x-full transition-transform duration-300"
-    style="height: 93vh;">
-
-        <!-- Mobile Menu Content -->
+    <div id="mobileMenu" class="fixed top-[64px] right-0 w-80 max-w-[90vw] bg-white shadow-2xl z-50 md:hidden transform translate-x-full transition-transform duration-300" style="height: 93vh;">
         <div class="flex-1 overflow-y-auto py-6 bg-white">
             
-            <!-- User Info (if authenticated) -->
+            <!-- User Info -->
             {% if user.is_authenticated %}
             <div class="px-6 mb-6 pb-6 border-b border-gray-100">
                 <div class="flex items-center space-x-3 mb-4">
@@ -280,7 +276,7 @@
             </div>
 
             {% else %}
-            <!-- Auth Section for Non-authenticated Users -->
+            <!-- Auth Section -->
             <div class="px-6">
                 <h4 class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-4">Account</h4>
                 <div class="space-y-3">
@@ -317,10 +313,9 @@
                         </svg>
                     </button>
                 </div>
-                <form method="get" action="{% url 'catalog:index' %}" onsubmit="return e.target.searchInput.value.trim() !== ''" class="space-y-4">
+                <form method="get" action="{% url 'catalog:index' %}" id="searchForm" class="space-y-4">
                     <div class="relative mb-4">
-                        <input type="text" id="searchInput" name="q" value="{{ request.GET.q }}" placeholder="Search products..."
-                                class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent text-sm">
+                        <input type="text" id="searchInput" name="q" value="{{ request.GET.q }}" placeholder="Search products..." class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent focus:outline-none text-sm">
                         <svg class="w-5 h-5 absolute left-3 top-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
                         </svg>
@@ -335,190 +330,209 @@
 </div>
 
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Get all the elements we need
-    const navbar = document.getElementById('navbar');
-    const profileBtn = document.getElementById('profileBtn');
-    const profileMenu = document.getElementById('profileMenu');
-    const profileChevron = document.getElementById('profileChevron');
-    const mobileMenuBtn = document.getElementById('mobileMenuBtn');
-    const mobileMenu = document.getElementById('mobileMenu');
-    const mobileMenuOverlay = document.getElementById('mobileMenuOverlay');
-    const menuIcon = document.getElementById('menuIcon');
-    const searchBtn = document.getElementById('searchBtn');
-    const searchModal = document.getElementById('searchModal');
-    const searchModalContent = document.getElementById('searchModalContent');
-    const closeSearch = document.getElementById('closeSearch');
-    const searchInput = document.getElementById('searchInput');
+(function() {
+    'use strict';
+    
+    // Cache DOM elements
+    const elements = {
+        navbar: document.getElementById('navbar'),
+        profileBtn: document.getElementById('profileBtn'),
+        profileMenu: document.getElementById('profileMenu'),
+        profileChevron: document.getElementById('profileChevron'),
+        mobileMenuBtn: document.getElementById('mobileMenuBtn'),
+        mobileMenu: document.getElementById('mobileMenu'),
+        mobileMenuOverlay: document.getElementById('mobileMenuOverlay'),
+        menuIcon: document.getElementById('menuIcon'),
+        searchBtn: document.getElementById('searchBtn'),
+        searchModal: document.getElementById('searchModal'),
+        searchModalContent: document.getElementById('searchModalContent'),
+        closeSearch: document.getElementById('closeSearch'),
+        searchInput: document.getElementById('searchInput'),
+        searchForm: document.getElementById('searchForm')
+    };
 
-    // Enhanced scroll-based navbar styling
-    let scrollTimeout;
-    window.addEventListener('scroll', function() {
-        clearTimeout(scrollTimeout);
-        scrollTimeout = setTimeout(function() {
-            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-            
-            if (scrollTop > 50) {
-                navbar.classList.remove('bg-white/95');
-                navbar.classList.add('bg-white/98', 'backdrop-blur-md');
-            } else {
-                navbar.classList.remove('bg-white/98', 'backdrop-blur-md');
-                navbar.classList.add('bg-white/95');
-            }
-        }, 10);
-    });
+    // State
+    let isMenuOpen = false;
+    let lastScrollTop = 0;
 
-    // Profile dropdown functionality
-    if (profileBtn && profileMenu) {
-        profileBtn.addEventListener('click', function(e) {
-            e.stopPropagation();
-            const isOpen = profileMenu.classList.contains('opacity-100');
-            
-            if (isOpen) {
-                closeProfileMenu();
-            } else {
-                openProfileMenu();
-            }
-        });
-
-        function openProfileMenu() {
-            profileMenu.classList.remove('opacity-0', 'invisible', 'translate-y-2');
-            profileMenu.classList.add('opacity-100', 'visible', 'translate-y-0');
-            if (profileChevron) {
-                profileChevron.style.transform = 'rotate(180deg)';
-            }
+    // Navbar scroll effect
+    function handleScroll() {
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        
+        if (scrollTop > 50) {
+            elements.navbar.classList.add('bg-white/98', 'backdrop-blur-md');
+            elements.navbar.classList.remove('bg-white/95');
+        } else {
+            elements.navbar.classList.remove('bg-white/98', 'backdrop-blur-md');
+            elements.navbar.classList.add('bg-white/95');
         }
-
-        function closeProfileMenu() {
-            profileMenu.classList.remove('opacity-100', 'visible', 'translate-y-0');
-            profileMenu.classList.add('opacity-0', 'invisible', 'translate-y-2');
-            if (profileChevron) {
-                profileChevron.style.transform = 'rotate(0deg)';
-            }
-        }
-
-        // Close dropdown when clicking outside
-        document.addEventListener('click', function(e) {
-            if (!profileMenu.contains(e.target) && !profileBtn.contains(e.target)) {
-                closeProfileMenu();
-            }
-        });
+        
+        lastScrollTop = scrollTop;
     }
 
-    // Mobile menu functionality
-    let isMenuOpen = false;
+    // Throttle function for scroll performance
+    function throttle(func, wait) {
+        let timeout;
+        return function() {
+            if (!timeout) {
+                timeout = setTimeout(function() {
+                    timeout = null;
+                    func();
+                }, wait);
+            }
+        };
+    }
 
+    // Profile dropdown functions
+    function openProfileMenu() {
+        if (!elements.profileMenu) return;
+        
+        elements.profileMenu.classList.remove('opacity-0', 'invisible', 'translate-y-2');
+        elements.profileMenu.classList.add('opacity-100', 'visible', 'translate-y-0');
+        
+        if (elements.profileChevron) {
+            elements.profileChevron.style.transform = 'rotate(180deg)';
+        }
+    }
+
+    function closeProfileMenu() {
+        if (!elements.profileMenu) return;
+        
+        elements.profileMenu.classList.remove('opacity-100', 'visible', 'translate-y-0');
+        elements.profileMenu.classList.add('opacity-0', 'invisible', 'translate-y-2');
+        
+        if (elements.profileChevron) {
+            elements.profileChevron.style.transform = 'rotate(0deg)';
+        }
+    }
+
+    // Mobile menu functions
     function openMobileMenu() {
         isMenuOpen = true;
-        mobileMenu.classList.remove('translate-x-full');
-        mobileMenu.classList.add('translate-x-0');
-        mobileMenuOverlay.classList.remove('opacity-0', 'invisible');
-        mobileMenuOverlay.classList.add('opacity-100', 'visible');
+        elements.mobileMenu.classList.remove('translate-x-full');
+        elements.mobileMenu.classList.add('translate-x-0');
+        elements.mobileMenuOverlay.classList.remove('opacity-0', 'invisible');
+        elements.mobileMenuOverlay.classList.add('opacity-100', 'visible');
         
-        // Animate hamburger to X
-        menuIcon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>';
+        // Change to X icon
+        elements.menuIcon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>';
         
-        // Prevent body scroll
         document.body.style.overflow = 'hidden';
     }
 
     function closeMobileMenu() {
         isMenuOpen = false;
-        mobileMenu.classList.remove('translate-x-0');
-        mobileMenu.classList.add('translate-x-full');
-        mobileMenuOverlay.classList.remove('opacity-100', 'visible');
-        mobileMenuOverlay.classList.add('opacity-0', 'invisible');
+        elements.mobileMenu.classList.remove('translate-x-0');
+        elements.mobileMenu.classList.add('translate-x-full');
+        elements.mobileMenuOverlay.classList.remove('opacity-100', 'visible');
+        elements.mobileMenuOverlay.classList.add('opacity-0', 'invisible');
         
-        // Animate X back to hamburger
-        menuIcon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>';
+        // Change to hamburger icon
+        elements.menuIcon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>';
         
-        // Restore body scroll
         document.body.style.overflow = '';
     }
 
-    if (mobileMenuBtn) {
-        mobileMenuBtn.addEventListener('click', function() {
-            if (isMenuOpen) {
-                closeMobileMenu();
-            } else {
-                openMobileMenu();
-            }
-        });
-    }
-
-    if (mobileMenuOverlay) {
-        mobileMenuOverlay.addEventListener('click', closeMobileMenu);
-    }
-
-    // Search modal functionality
+    // Search modal functions
     function openSearchModal() {
-        searchModal.classList.remove('opacity-0', 'invisible');
-        searchModal.classList.add('opacity-100', 'visible');
-        searchModalContent.classList.remove('scale-95');
-        searchModalContent.classList.add('scale-100');
+        elements.searchModal.classList.remove('opacity-0', 'invisible');
+        elements.searchModal.classList.add('opacity-100', 'visible');
+        elements.searchModalContent.classList.remove('scale-95');
+        elements.searchModalContent.classList.add('scale-100');
+        
         document.body.style.overflow = 'hidden';
         
-        // Focus on search input after animation
         setTimeout(function() {
-            if (searchInput) {
-                searchInput.focus();
-            }
+            elements.searchInput.focus();
         }, 300);
     }
 
     function closeSearchModal() {
-        searchModal.classList.remove('opacity-100', 'visible');
-        searchModal.classList.add('opacity-0', 'invisible');
-        searchModalContent.classList.remove('scale-100');
-        searchModalContent.classList.add('scale-95');
-        document.body.style.overflow = '';
+        elements.searchModal.classList.remove('opacity-100', 'visible');
+        elements.searchModal.classList.add('opacity-0', 'invisible');
+        elements.searchModalContent.classList.remove('scale-100');
+        elements.searchModalContent.classList.add('scale-95');
         
-        // Clear search input
-        if (searchInput) {
-            searchInput.value = '';
-        }
+        document.body.style.overflow = '';
     }
 
-    if (searchBtn) {
-        searchBtn.addEventListener('click', openSearchModal);
+    // Event Listeners
+    
+    // Scroll listener with throttle
+    window.addEventListener('scroll', throttle(handleScroll, 100));
+
+    // Profile dropdown
+    if (elements.profileBtn && elements.profileMenu) {
+        elements.profileBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            const isOpen = elements.profileMenu.classList.contains('opacity-100');
+            isOpen ? closeProfileMenu() : openProfileMenu();
+        });
+
+        // Close when clicking outside
+        document.addEventListener('click', function(e) {
+            if (!elements.profileMenu.contains(e.target) && !elements.profileBtn.contains(e.target)) {
+                closeProfileMenu();
+            }
+        });
     }
 
-    if (closeSearch) {
-        closeSearch.addEventListener('click', closeSearchModal);
+    // Mobile menu
+    if (elements.mobileMenuBtn) {
+        elements.mobileMenuBtn.addEventListener('click', function() {
+            isMenuOpen ? closeMobileMenu() : openMobileMenu();
+        });
     }
 
-    // Close search modal when clicking outside
-    if (searchModal) {
-        searchModal.addEventListener('click', function(e) {
-            if (e.target === searchModal) {
+    if (elements.mobileMenuOverlay) {
+        elements.mobileMenuOverlay.addEventListener('click', closeMobileMenu);
+    }
+
+    // Close mobile menu on link click
+    const mobileLinks = elements.mobileMenu?.querySelectorAll('a[href]');
+    if (mobileLinks) {
+        mobileLinks.forEach(function(link) {
+            link.addEventListener('click', function() {
+                setTimeout(closeMobileMenu, 100);
+            });
+        });
+    }
+
+    // Search modal
+    if (elements.searchBtn) {
+        elements.searchBtn.addEventListener('click', openSearchModal);
+    }
+
+    if (elements.closeSearch) {
+        elements.closeSearch.addEventListener('click', closeSearchModal);
+    }
+
+    if (elements.searchModal) {
+        elements.searchModal.addEventListener('click', function(e) {
+            if (e.target === elements.searchModal) {
                 closeSearchModal();
             }
         });
     }
 
-    // Handle search input
-    if (searchInput) {
-        searchInput.addEventListener('keydown', function(e) {
-            if (e.key === 'Enter') {
-                // Add your search functionality here
-                const searchQuery = searchInput.value.trim();
-                if (searchQuery) {
-                    // Redirect to search results or handle search
-                    console.log('Searching for:', searchQuery);
-                    // Example: window.location.href = `/search?q=${encodeURIComponent(searchQuery)}`;
-                }
-                closeSearchModal();
+    // Search form validation
+    if (elements.searchForm) {
+        elements.searchForm.addEventListener('submit', function(e) {
+            const searchValue = elements.searchInput.value.trim();
+            if (!searchValue) {
+                e.preventDefault();
+                elements.searchInput.focus();
             }
         });
     }
 
     // Keyboard shortcuts
     document.addEventListener('keydown', function(e) {
-        // Escape key - close all modals
+        // Escape key - close all
         if (e.key === 'Escape') {
             closeMobileMenu();
             closeSearchModal();
-            if (profileMenu && profileMenu.classList.contains('opacity-100')) {
+            if (elements.profileMenu && elements.profileMenu.classList.contains('opacity-100')) {
                 closeProfileMenu();
             }
         }
@@ -530,47 +544,18 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // Close mobile menu when clicking on navigation links
-    const mobileNavLinks = mobileMenu?.querySelectorAll('a[href]');
-    if (mobileNavLinks) {
-        mobileNavLinks.forEach(link => {
-            link.addEventListener('click', function() {
-                // Small delay to allow navigation to start
-                setTimeout(closeMobileMenu, 100);
-            });
-        });
-    }
-
-    // Smooth scroll for hash links
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener('click', function (e) {
-            e.preventDefault();
-            const target = document.querySelector(this.getAttribute('href'));
-            if (target) {
-                const navbarHeight = navbar.offsetHeight;
-                const targetPosition = target.offsetTop - navbarHeight - 20;
-                
-                window.scrollTo({
-                    top: targetPosition,
-                    behavior: 'smooth'
-                });
+    // Handle window resize
+    let resizeTimeout;
+    window.addEventListener('resize', function() {
+        clearTimeout(resizeTimeout);
+        resizeTimeout = setTimeout(function() {
+            if (window.innerWidth >= 768 && isMenuOpen) {
+                closeMobileMenu();
             }
-        });
+        }, 250);
     });
 
-    // Add loading states for buttons
-    const buttons = document.querySelectorAll('button, a');
-    buttons.forEach(button => {
-        button.addEventListener('click', function() {
-            // Add subtle loading effect
-            this.style.transform = 'scale(0.98)';
-            setTimeout(() => {
-                this.style.transform = '';
-            }, 150);
-        });
-    });
-
-    // Optimize animations for reduced motion preference
+    // Reduced motion support
     if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
         const style = document.createElement('style');
         style.textContent = `
@@ -584,16 +569,7 @@ document.addEventListener('DOMContentLoaded', function() {
         document.head.appendChild(style);
     }
 
-    // Handle window resize
-    let resizeTimeout;
-    window.addEventListener('resize', function() {
-        clearTimeout(resizeTimeout);
-        resizeTimeout = setTimeout(function() {
-            // Close mobile menu on desktop
-            if (window.innerWidth >= 768 && isMenuOpen) {
-                closeMobileMenu();
-            }
-        }, 250);
-    });
-});
+    // Initialize
+    handleScroll();
+})();
 </script>

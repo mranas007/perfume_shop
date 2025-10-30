@@ -62,15 +62,15 @@
           {% if product.original_price and product.original_price > product.price %}
             <!-- Show discount pricing -->
             <div class="flex items-center space-x-2">
-              <span class="line-through text-gray-400 text-xs relative">
+              <span class="line-through text-gray-400 text-sm relative">
                 Rs. {{ product.original_price|floatformat:0 }}
                 <!-- Diagonal cut line -->
                 <span class="absolute inset-0 flex items-center justify-center">
-                  <span class="w-full h-0.5 bg-red-500 transform rotate-12"></span>
+                  <span class="w-full h-0.5 bg-red-500 transform"></span>
                 </span>
               </span>
               <span class="bg-red-100 text-red-600 text-xs font-bold px-2 py-0.5 rounded-full">
-                SALE
+                DISCOUNT
               </span>
             </div>
             <div class="flex items-center space-x-1">

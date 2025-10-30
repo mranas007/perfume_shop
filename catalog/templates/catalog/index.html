@@ -169,8 +169,10 @@
                     {% endif %}
                     <div class="flex gap-2">
                         <div class="relative flex-1">
-                            <input type="text" name="q" value="{{ request.GET.q }}" placeholder="🔍︎ Search products..."
-                                class="w-full pl-4 px-1 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent text-sm">
+                            <input type="text" name="q" value="{{ request.GET.q }}" placeholder="Search products..." class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent focus:outline-none text-sm">
+                            <svg class="w-5 h-5 absolute left-3 top-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                            </svg>
                         </div>
                         <button type="submit"
                             class="bg-amber-500 hover:bg-amber-600 text-white px-4 py-2.5 rounded-lg text-sm font-medium transition-colors">
@@ -222,8 +224,7 @@
                         {% endif %}
                         <button onclick="removeFilter('sort')" class="hover:bg-gray-200 rounded-full p-0.5">
                             <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M6 18L18 6M6 6l12 12" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                             </svg>
                         </button>
                     </span>
@@ -243,8 +244,7 @@
                         <h2 class="text-lg font-semibold text-gray-800">Filters</h2>
                         <button onclick="toggleFilter()" class="lg:hidden text-gray-400 hover:text-gray-600">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M6 18L18 6M6 6l12 12" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                             </svg>
                         </button>
                     </div>
@@ -363,9 +363,10 @@
                                 <input type="hidden" name="sort" value="{{ request.GET.sort }}">
                                 {% endif %}
                                 <div class="relative">
-                                    <input type="text" name="q" value="{{ request.GET.q }}"
-                                        placeholder="🔍︎ Search products..."
-                                        class="w-full pl-4 px-1 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent text-sm">
+                                    <input type="text" name="q" value="{{ request.GET.q }}" placeholder="Search products..." class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent focus:outline-none text-sm">
+                                    <svg class="w-5 h-5 absolute left-3 top-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                                    </svg>
                                 </div>
                                 <button type="submit"
                                     class="bg-amber-500 hover:bg-amber-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
@@ -409,8 +410,7 @@
                                 {% for num in page_obj.paginator.page_range %}
                                 {% if page_obj.number == num %}
                                 <span
-                                    class="px-3 lg:px-4 py-2 text-sm font-medium text-white bg-amber-500 border border-amber-500 rounded-lg">{{
-                                    num }}</span>
+                                    class="px-3 lg:px-4 py-2 text-sm font-medium text-white bg-amber-500 border border-amber-500 rounded-lg">{{ num }}</span>
                                 {% elif num > page_obj.number|add:'-2' and num < page_obj.number|add:'3' %} <a
                                     href="?{% if request.GET.category_slug %}category_slug={{ request.GET.category_slug }}&{% endif %}{% if request.GET.sort %}sort={{ request.GET.sort }}&{% endif %}page={{ num }}"
                                     class="px-3 lg:px-4 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 hover:text-gray-700 transition-colors">
