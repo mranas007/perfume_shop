@@ -1,13 +1,39 @@
 from pathlib import Path
 import os
+import dj_database_url
 import dotenv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-# settings is at perfume_shop/settings/base.py → project root is three levels up
-BASE_DIR = Path(__file__).resolve().parent.parent.parent
+BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Load environment variables
 dotenv.load_dotenv()
+
+# Logging configuration
+# LOGGING = {
+#     "version": 1,
+#     "disable_existing_loggers": False,
+#     "handlers": {
+#         "console": {
+#             "class": "logging.StreamHandler",
+#         },
+#     },
+#     "root": {
+#         "handlers": ["console"],
+#         "level": "INFO",  # or WARNING in production to reduce noise
+#     },
+# }
+
+# SECURITY WARNING: keep the secret key used in production secret!
+SECRET_KEY = os.getenv('SECRET_KEY')
+
+# SECURITY WARNING: don't run with debug turned on in production!
+DEBUG = os.getenv('DEBUG', 'False').lower() == 'true'
+
+# Update this with your domains
+ALLOWED_HOSTS = ['adnanfragrance.com', 'www.adnanfragrance.com', 'localhost', '127.0.0.1']
+CSRF_TRUSTED_ORIGINS = ['https://adnanfragrance.com', 'https://www.adnanfragrance.com']
+SITE_DOMAIN = "https://www.adnanfragrance.com"
 
 # Application definition
 INSTALLED_APPS = [
@@ -64,6 +90,12 @@ WSGI_APPLICATION = 'perfume_shop.wsgi.application'
 
 # Custom user model
 AUTH_USER_MODEL = 'accounts.User'
+
+
+# Database
+DATABASES = {
+    'default': dj_database_url.config(default=os.getenv('DATABASE_URL')),
+}
 
 
 # Password validation
